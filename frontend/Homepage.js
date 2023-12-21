@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, View, Text, StyleSheet } from 'react-native';
+import { Button, View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 
 const HomeScreen = ({ navigation }) => {
   const totalBalance = 1000;
@@ -7,36 +7,48 @@ const HomeScreen = ({ navigation }) => {
     { name: 'Transaction 1', category: 'Food', amount: 10, time: '10:00 AM' },
     { name: 'Transaction 2', category: 'Transportation', amount: 20, time: '11:00 AM' },
     { name: 'Transaction 3', category: 'Shopping', amount: 30, time: '12:00 PM' },
+    { name: 'Transaction 4', category: 'Shopping', amount: 30, time: '12:00 PM' },
+    { name: 'Transaction 5', category: 'Shopping', amount: 30, time: '12:00 PM' },
+    { name: 'Transaction 6', category: 'Shopping', amount: 30, time: '12:00 PM' },
   ];
 
+
   return (
-    <View style={styles.contentArea}>
-      <Text style={styles.title}>FYP Finance App</Text>
-      <View style={styles.totalBalanceContainer}>
-        <Text style={styles.totalBalanceText}>Total Balance: ${totalBalance}</Text>
-      </View>
-      <Text style={styles.recentTransactions}>Recent Transactions</Text>
-      {recentTransactions.map((transaction, index) => (
-        <View key={index} style={styles.transactionContainer}>
-          <Text style={[styles.largeTransactionText, styles.topLeft,]}>{transaction.name}</Text>
-          <Text style={[styles.largeTransactionText, styles.topRight,]}>${transaction.amount}</Text>
-          <Text style={[styles.smallTransactionText, styles.bottomLeft,]}>{transaction.category}</Text>
-          <Text style={[styles.smallTransactionText, styles.bottomRight]}>{transaction.time}</Text>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.contentArea}>
+        <Text style={styles.title}>FYP Finance App</Text>
+        <View style={styles.totalBalanceContainer}>
+          <Text style={styles.totalBalanceText}>Total Balance: ${totalBalance}</Text>
         </View>
-      ))}
-      <Button
-        title="Go to Bubujai Detail Page"
-        onPress={() =>
-          navigation.navigate('Details', { name: 'BubuJai' })
-        }
-      />
-    </View>
+        <Text style={styles.recentTransactions}>Recent Transactions</Text>
+        {recentTransactions.map((transaction, index) => (
+          <View key={index} style={styles.transactionContainer}>
+            <Text style={[styles.largeTransactionText, styles.topLeft,]}>{transaction.name}</Text>
+            <Text style={[styles.largeTransactionText, styles.topRight,]}>${transaction.amount}</Text>
+            <Text style={[styles.smallTransactionText, styles.bottomLeft,]}>{transaction.category}</Text>
+            <Text style={[styles.smallTransactionText, styles.bottomRight]}>{transaction.time}</Text>
+          </View>
+        ))}
+        <Button
+          title="Go to Bubujai Detail Page"
+          onPress={() =>
+            navigation.navigate('Details', { name: 'BubuJai' })
+          }
+        />
+      </View>
+    </ScrollView>
   );
 };
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
+const fontSize = Math.min(windowWidth, windowHeight) * 0.045;
 
 const styles = StyleSheet.create({
-  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 20, color: '#1AA7EC' },
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  title: { fontSize: fontSize * 1.7, fontWeight: 'bold', marginBottom: 20, color: '#1AA7EC' },
   contentArea: {
     flex: 1,
     alignItems: 'center',
@@ -52,15 +64,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   totalBalanceText: {
-    fontSize: 24,
+    fontSize: fontSize * 1.2,
     fontWeight: 'bold',
   },
-  recentTransactions: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, marginTop: 20 },
+  recentTransactions: { fontSize: fontSize * 1.2, fontWeight: 'bold', marginBottom: 20, marginTop: 20 },
   transactionContainer: {
     position: 'static',
     alignSelf: 'center',
     width: '80%',
-    height: 110,
+    height: windowHeight * 0.1,
     marginBottom: 10,
     padding: 10,
     backgroundColor: '#f2f2f2',
@@ -69,13 +81,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   largeTransactionText: {
-    fontSize: 22,
+    fontSize: fontSize,
     marginBottom: 5,
     fontWeight: 'bold',
     flexWrap: 'wrap',
   },
   smallTransactionText: {
-    fontSize: 20,
+    fontSize: fontSize * 0.9,
     marginBottom: 5,
     fontWeight: 'bold',
     flexWrap: 'wrap',
@@ -102,6 +114,7 @@ const styles = StyleSheet.create({
     right: 10,
   },
 });
+
 
 
 
