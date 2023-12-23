@@ -5,8 +5,10 @@ import moment from 'moment';
 const HomeScreen = ({ navigation }) => {
   const totalBalance = 1000;
   const [transactions, setTransactions] = useState([])
-  const IP = '192.168.1.141'
-  // const IP = 'localhost'
+  // Baseball
+  // const IP = '192.168.1.141'
+  // York
+  const IP = '192.168.0.169'
   const PORT = 3000
 
   const getData = () => {
