@@ -1,16 +1,33 @@
-import React from 'react';
+import { React, useState, useEffect } from 'react';
 import { Button, View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import moment from 'moment';
 
 const HomeScreen = ({ navigation }) => {
   const totalBalance = 1000;
-  const recentTransactions = [
-    { name: 'Transaction 1', category: 'Food', amount: 10, time: '10:00 AM' },
-    { name: 'Transaction 2', category: 'Transportation', amount: 20, time: '11:00 AM' },
-    { name: 'Transaction 3', category: 'Shopping', amount: 30, time: '12:00 PM' },
-    { name: 'Transaction 4', category: 'Shopping', amount: 30, time: '12:00 PM' },
-    { name: 'Transaction 5', category: 'Shopping', amount: 30, time: '12:00 PM' },
-    { name: 'Transaction 6', category: 'Shopping', amount: 30, time: '12:00 PM' },
-  ];
+  const [transactions, setTransactions] = useState([])
+  const IP = '192.168.1.141'
+  // const IP = 'localhost'
+  const PORT = 3000
+
+  const getData = () => {
+    // Change hard code ip to function call
+    fetch(`http://${IP}:${PORT}`)
+      .then(response => {
+        return response.text();
+      })
+      .then(data => {
+        parsedData = JSON.parse(data)
+        setTransactions(parsedData);
+      });
+  }
+
+  const formatTime = (time) => {
+    return moment.utc(time).format('MMM DD HH:mm')
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
 
 
   return (
@@ -21,12 +38,12 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.totalBalanceText}>Total Balance: ${totalBalance}</Text>
         </View>
         <Text style={styles.recentTransactions}>Recent Transactions</Text>
-        {recentTransactions.map((transaction, index) => (
+        {transactions.map((transaction, index) => (
           <View key={index} style={styles.transactionContainer}>
             <Text style={[styles.largeTransactionText, styles.topLeft,]}>{transaction.name}</Text>
             <Text style={[styles.largeTransactionText, styles.topRight,]}>${transaction.amount}</Text>
             <Text style={[styles.smallTransactionText, styles.bottomLeft,]}>{transaction.category}</Text>
-            <Text style={[styles.smallTransactionText, styles.bottomRight]}>{transaction.time}</Text>
+            <Text style={[styles.smallTransactionText, styles.bottomRight]}>{formatTime(transaction.time)}</Text>
           </View>
         ))}
         <Button
@@ -35,6 +52,7 @@ const HomeScreen = ({ navigation }) => {
             navigation.navigate('Details', { name: 'BubuJai' })
           }
         />
+        <Button title="refresh" onPress={() => getData()} />
       </View>
     </ScrollView>
   );
@@ -114,8 +132,5 @@ const styles = StyleSheet.create({
     right: 10,
   },
 });
-
-
-
 
 export default HomeScreen;
