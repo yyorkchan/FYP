@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     position: 'static',
     alignSelf: 'center',
     width: '80%',
-    height: Math.max(windowHeight * 0.1, 75), 
+    height: Math.max(windowHeight * 0.1, 75),
     marginBottom: 10,
     padding: 10,
     backgroundColor: '#f2f2f2',
