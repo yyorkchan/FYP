@@ -8,11 +8,10 @@ import {
   ScrollView,
   Button,
 } from "react-native";
-import moment from "moment";
 import SwitchToggle from "react-native-switch-toggle";
 import { SelectList } from "react-native-dropdown-select-list";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { IP, PORT } from './Homepage'
+import { formatDateTime, createRecord } from './util'
 
 // Declare UI size constants
 const windowWidth = Dimensions.get("window").width;
@@ -32,11 +31,6 @@ const AddScreen = ({ navigation }) => {
   const [time, setTime] = useState(null);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
-  // Converts a js date object to Hong Kong time
-  const formatDateTime = (time) => {
-    return moment(time).utcOffset(480).format("lll");
-  };
-
   const handleConfirm = (time) => {
     setTime(time);
     setDatePickerVisible(false);
@@ -52,24 +46,6 @@ const AddScreen = ({ navigation }) => {
     { key: "6", value: "Shopping" },
     { key: "7", value: "Others" },
   ];
-
-  const createRecord = () => {
-    const reqObj = { name, category, amount: amount * (2 * isIncome - 1), time }
-    fetch(`http://${IP}:${PORT}/insert`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(reqObj),
-    })
-      .then(response => {
-        return response.text();
-      })
-      .then(data => {
-        alert(data);
-        // getData();
-      });
-  }
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -143,7 +119,7 @@ const AddScreen = ({ navigation }) => {
         <View>
           <Button
             title="Add Record"
-            onPress={() => createRecord()}
+            onPress={() => createRecord(name, category, amount, time, isIncome)}
           />
         </View>
         {/* Debug */}

@@ -1,37 +1,14 @@
 import { React, useState, useEffect } from 'react';
 import { Button, View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
-import moment from 'moment';
-
-// Baseball
-export const IP = '192.168.1.141'
-// York
-// export const IP = '192.168.0.169'
-export const PORT = 3000
+import { getData, formatDate } from './util'
 
 const HomeScreen = ({ navigation }) => {
   const totalBalance = 1000;
   const [transactions, setTransactions] = useState([])
 
-  const getData = () => {
-    // Change hard code ip to function call
-    fetch(`http://${IP}:${PORT}`)
-      .then(response => {
-        return response.text();
-      })
-      .then(data => {
-        parsedData = JSON.parse(data)
-        setTransactions(parsedData);
-      });
-  }
-
-  const formatTime = (time) => {
-    return moment(time).utcOffset(480).format("ll");
-  }
-
   useEffect(() => {
-    getData();
+    getData(setTransactions);
   }, []);
-
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -46,7 +23,7 @@ const HomeScreen = ({ navigation }) => {
             <Text style={[styles.largeTransactionText, styles.topLeft,]}>{transaction.name}</Text>
             <Text style={[styles.largeTransactionText, styles.topRight,]}>${transaction.amount}</Text>
             <Text style={[styles.smallTransactionText, styles.bottomLeft,]}>{transaction.category}</Text>
-            <Text style={[styles.smallTransactionText, styles.bottomRight]}>{formatTime(transaction.time)}</Text>
+            <Text style={[styles.smallTransactionText, styles.bottomRight]}>{formatDate(transaction.time)}</Text>
           </View>
         ))}
         <Button
@@ -55,7 +32,7 @@ const HomeScreen = ({ navigation }) => {
             navigation.navigate('Details', { name: 'BubuJai' })
           }
         />
-        <Button title="refresh" onPress={() => getData()} />
+        <Button title="refresh" onPress={() => getData(setTransactions)} />
       </View>
     </ScrollView>
   );
