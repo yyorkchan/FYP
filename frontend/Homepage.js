@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from 'react';
-import { Button, View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
-import { getData, formatDate } from './util'
+import { Button, View, Text, StyleSheet, ScrollView } from 'react-native';
+import { getData, formatDate, fontSize, windowHeight } from './util'
 
 const HomeScreen = ({ navigation }) => {
   const totalBalance = 1000;
@@ -37,10 +37,6 @@ const HomeScreen = ({ navigation }) => {
     </ScrollView>
   );
 };
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
-const fontSize = Math.min(windowWidth, windowHeight) * 0.045;
 
 const styles = StyleSheet.create({
   scrollContainer: {

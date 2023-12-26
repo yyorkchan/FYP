@@ -1,10 +1,17 @@
 import moment from "moment";
+import { Dimensions } from "react-native";
 
 // Baseball
 export const IP = "192.168.1.141";
 // York
 // export const IP = '192.168.0.169'
 export const PORT = 3000;
+
+// Declare UI size constants
+export const windowWidth = Dimensions.get("window").width;
+export const windowHeight = Dimensions.get("window").height;
+
+export const fontSize = Math.min(windowWidth, windowHeight) * 0.045;
 
 export const getData = (setData) => {
   // Change hard code ip to function call

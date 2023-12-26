@@ -3,7 +3,6 @@ import {
   Text,
   View,
   StyleSheet,
-  Dimensions,
   TextInput,
   ScrollView,
   Button,
@@ -11,16 +10,18 @@ import {
 import SwitchToggle from "react-native-switch-toggle";
 import { SelectList } from "react-native-dropdown-select-list";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { formatDateTime, createRecord } from './util'
+import {
+  formatDateTime,
+  createRecord,
+  windowHeight,
+  windowWidth,
+  fontSize,
+} from "./util";
 
 // Declare UI size constants
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
 const componentWidth = windowWidth * 0.8;
 const toggleWidth = componentWidth;
 const toggleHeight = Math.max(windowHeight * 0.04, 40);
-
-const fontSize = Math.min(windowWidth, windowHeight) * 0.045;
 
 const AddScreen = ({ navigation }) => {
   // Switch on = income, off = expense
