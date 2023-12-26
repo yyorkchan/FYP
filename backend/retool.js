@@ -25,6 +25,30 @@ const getRecord = async () => {
   }
 };
 
+// Add a new record to the retool database
+const addRecord = (body) => {
+  return new Promise((resolve, reject) => {
+    const { name, category, amount, time } = body;
+    pool.query(
+      "INSERT INTO records (name, category, amount, time) VALUES ($1, $2, $3, $4) RETURNING *",
+      [name, category, amount, time],
+      (error, results) => {
+        if (error) {
+          reject(error);
+        }
+        if (results && results.rows) {
+          resolve(
+            `A new record has been added: ${JSON.stringify(results.rows[0])}`
+          );
+        } else {
+          reject(new Error("No results found"));
+        }
+      }
+    );
+  });
+};
+
 module.exports = {
   getRecord,
+  addRecord,
 };

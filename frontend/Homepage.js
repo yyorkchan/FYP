@@ -2,14 +2,15 @@ import { React, useState, useEffect } from 'react';
 import { Button, View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import moment from 'moment';
 
+// Baseball
+export const IP = '192.168.1.141'
+// York
+// export const IP = '192.168.0.169'
+export const PORT = 3000
+
 const HomeScreen = ({ navigation }) => {
   const totalBalance = 1000;
   const [transactions, setTransactions] = useState([])
-  // Baseball
-  // const IP = '192.168.1.141'
-  // York
-  const IP = '192.168.0.169'
-  const PORT = 3000
 
   const getData = () => {
     // Change hard code ip to function call
@@ -24,7 +25,7 @@ const HomeScreen = ({ navigation }) => {
   }
 
   const formatTime = (time) => {
-    return moment.utc(time).format('MMM DD HH:mm')
+    return moment(time).utcOffset(480).format("ll");
   }
 
   useEffect(() => {

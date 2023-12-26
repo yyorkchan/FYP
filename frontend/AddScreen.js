@@ -12,6 +12,7 @@ import moment from "moment";
 import SwitchToggle from "react-native-switch-toggle";
 import { SelectList } from "react-native-dropdown-select-list";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { IP, PORT } from './Homepage'
 
 // Declare UI size constants
 const windowWidth = Dimensions.get("window").width;
@@ -28,20 +29,20 @@ const AddScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState(0);
 
-  const [dateTime, setDateTime] = useState(null);
+  const [time, setTime] = useState(null);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
   // Converts a js date object to Hong Kong time
-  const formatDateTime = (dateTime) => {
-    return moment(dateTime).utcOffset(480).format("lll");
+  const formatDateTime = (time) => {
+    return moment(time).utcOffset(480).format("lll");
   };
 
-  const handleConfirm = (dateTime) => {
-    setDateTime(dateTime);
+  const handleConfirm = (time) => {
+    setTime(time);
     setDatePickerVisible(false);
   };
 
-  const [selectedType, setSelectedType] = useState([]);
+  const [category, setCategory] = useState([]);
   const allTypes = [
     { key: "1", value: "Entertainment" },
     { key: "2", value: "Education" },
@@ -51,6 +52,24 @@ const AddScreen = ({ navigation }) => {
     { key: "6", value: "Shopping" },
     { key: "7", value: "Others" },
   ];
+
+  const createRecord = () => {
+    const reqObj = { name, category, amount: amount * (2 * isIncome - 1), time }
+    fetch(`http://${IP}:${PORT}/insert`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(reqObj),
+    })
+      .then(response => {
+        return response.text();
+      })
+      .then(data => {
+        alert(data);
+        // getData();
+      });
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -92,9 +111,9 @@ const AddScreen = ({ navigation }) => {
           <Text style={styles.inputTitle}>Time & Date</Text>
           <Button
             title={
-              dateTime == null
+              time == null
                 ? "Press to select Time & Date"
-                : formatDateTime(dateTime)
+                : formatDateTime(time)
             }
             onPress={() => setDatePickerVisible(true)}
           />
@@ -112,7 +131,7 @@ const AddScreen = ({ navigation }) => {
           <SelectList
             data={allTypes}
             save="value"
-            setSelected={(value) => setSelectedType(value)}
+            setSelected={(value) => setCategory(value)}
             placeholder="Press to select type"
             search={false}
             maxHeight={windowHeight * 0.2}
@@ -124,7 +143,7 @@ const AddScreen = ({ navigation }) => {
         <View>
           <Button
             title="Add Record"
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => createRecord()}
           />
         </View>
         {/* Debug */}
@@ -138,9 +157,9 @@ const AddScreen = ({ navigation }) => {
         {/*     amount = {amount * (2 * isIncome - 1)} */}
         {/*   </Text> */}
         {/*   <Text style={styles.inputTitle}> */}
-        {/*     date time = {formatDateTime(dateTime)} */}
+        {/*     date time = {formatDateTime(time)} */}
         {/*   </Text> */}
-        {/*   <Text style={styles.inputTitle}>type = {selectedType}</Text> */}
+        {/*   <Text style={styles.inputTitle}>type = {category}</Text> */}
         {/* </View> */}
       </View>
     </ScrollView>
