@@ -39,13 +39,17 @@ const AddScreen = ({ navigation }) => {
 
   const [category, setCategory] = useState([]);
   const allTypes = [
-    { key: "1", value: "Entertainment" },
+    { key: "1", value: "Bills" },
     { key: "2", value: "Education" },
-    { key: "3", value: "Food" },
-    { key: "4", value: "Transport" },
-    { key: "5", value: "Travel" },
-    { key: "6", value: "Shopping" },
-    { key: "7", value: "Others" },
+    { key: "3", value: "Entertainment" },
+    { key: "4", value: "Family" },
+    { key: "5", value: "Food" },
+    { key: "6", value: "Grocery" },
+    { key: "7", value: "Medical" },
+    { key: "8", value: "Others" },
+    { key: "9", value: "Transport" },
+    { key: "10", value: "Travel" },
+    { key: "11", value: "Shopping" },
   ];
 
   return (

@@ -43,8 +43,8 @@ export const createRecord = (name, category, amount, time, isIncome) => {
     });
 };
 
-export const formatDate = (time) => {
-  return moment(time).utcOffset(480).format("ll");
+export const formatShortDateTime = (time) => {
+  return moment(time).utcOffset(480).format("MMM DD HH:mm");
 };
 
 // Converts a js date object to Hong Kong time

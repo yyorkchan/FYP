@@ -1,14 +1,23 @@
 import { React, useState, useEffect } from 'react';
 import { Button, View, Text, StyleSheet, ScrollView } from 'react-native';
-import { getData, formatDate, fontSize, windowHeight } from './util'
+import { getData, formatShortDateTime, fontSize, windowHeight } from './util'
 
 const HomeScreen = ({ navigation }) => {
-  const totalBalance = 1000;
+  const [totalBalance, setTotalBalance] = useState(0)
   const [transactions, setTransactions] = useState([])
+
+  const updateTotalBalance = (transactions) => {
+    let total = 0
+    for (let transaction of transactions) {
+      total += transaction.amount
+    }
+    setTotalBalance(total)
+  }
 
   useEffect(() => {
     getData(setTransactions);
-  }, []);
+    updateTotalBalance(transactions);
+  }, [transactions]);
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -23,7 +32,7 @@ const HomeScreen = ({ navigation }) => {
             <Text style={[styles.largeTransactionText, styles.topLeft,]}>{transaction.name}</Text>
             <Text style={[styles.largeTransactionText, styles.topRight,]}>${transaction.amount}</Text>
             <Text style={[styles.smallTransactionText, styles.bottomLeft,]}>{transaction.category}</Text>
-            <Text style={[styles.smallTransactionText, styles.bottomRight]}>{formatDate(transaction.time)}</Text>
+            <Text style={[styles.smallTransactionText, styles.bottomRight]}>{formatShortDateTime(transaction.time)}</Text>
           </View>
         ))}
         <Button
@@ -32,7 +41,7 @@ const HomeScreen = ({ navigation }) => {
             navigation.navigate('Details', { name: 'BubuJai' })
           }
         />
-        <Button title="refresh" onPress={() => getData(setTransactions)} />
+        <Button title="refresh" onPress={() => { getData(setTransactions); updateTotalBalance(transactions) }} />
       </View>
     </ScrollView>
   );
