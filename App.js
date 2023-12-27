@@ -1,19 +1,24 @@
-import { StyleSheet, Text, View, Dimensions, SafeAreaView, Platform } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import HomeScreen from './frontend/Homepage.js';
-import TrendScreen from './frontend/TrendScreen.js';
-import AddScreen from './frontend/AddScreen.js';
+import {
+  Dimensions,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { NavigationContainer } from "@react-navigation/native";
+import AddScreen from "./frontend/AddScreen.js";
+import HomeScreen from "./frontend/Homepage.js";
+import TrendScreen from "./frontend/TrendScreen.js";
 
 // const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-
 const DetailsScreen = ({ navigation, route }) => {
   return <Text>This is {route.params.name}'s Details</Text>;
 };
-
 
 export default function App() {
   // console.log(Dimensions.get('window').width)
@@ -55,7 +60,11 @@ export default function App() {
           initialParams={{ name: "Bubu" }}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="chart-line" color={color} size={size} />
+              <MaterialCommunityIcons
+                name="chart-line"
+                color={color}
+                size={size}
+              />
             ),
           }}
         />

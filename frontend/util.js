@@ -1,6 +1,7 @@
 import moment from "moment";
 import { Alert, Dimensions } from "react-native";
 
+// IP address of the server
 // Baseball
 export const IP = "192.168.1.141";
 // York
@@ -13,8 +14,8 @@ export const windowHeight = Dimensions.get("window").height;
 
 export const fontSize = Math.min(windowWidth, windowHeight) * 0.045;
 
+// Fetches data from the server and sorts it by time
 export const getData = (setData) => {
-  // Change hard code ip to function call
   fetch(`http://${IP}:${PORT}`)
     .then((response) => {
       return response.text();
@@ -26,7 +27,10 @@ export const getData = (setData) => {
     });
 };
 
+// Creates and add a record in the database
 export const createRecord = (name, category, amount, time, isIncome) => {
+  // If isIncome is true, the amount is the same
+  // If isIncome is false, the amount is negative the amount
   const reqObj = { name, category, amount: amount * (2 * isIncome - 1), time };
   fetch(`http://${IP}:${PORT}/insert`, {
     method: "POST",
@@ -39,16 +43,16 @@ export const createRecord = (name, category, amount, time, isIncome) => {
       return response.text();
     })
     .then((data) => {
-      Alert.alert('Record created successfully!');
-      // getData();
+      Alert.alert("Record created successfully!");
     });
 };
 
+// Converts a JS date object to Hong Kong date and time without year
 export const formatShortDateTime = (time) => {
   return moment(time).utcOffset(480).format("MMM DD HH:mm");
 };
 
-// Converts a js date object to Hong Kong time
+// Converts a JS date object to Hong Kong date and time with year
 export const formatDateTime = (time) => {
   return moment(time).utcOffset(480).format("lll");
 };

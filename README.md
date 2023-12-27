@@ -11,15 +11,16 @@ This is Our FYP. ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡
 
 ## Current To-Do List:
 Next up (๑•̀ㅂ•́)و✧ 🔥
-- Handle insert sql query to retool database: Next up
-- Start working on interim present ppt: Next Next up
+- Start working on interim present ppt: Next up
+- Start working on interim report: Next Next up
 
 Done!  ✧◝(⁰▿⁰)◜✧ ✅
-- Build Home Page: Done!
-- Figure out how to navigate: Done!
-- Get familiar with Retool: Done!
-- Fix the hard code IP address problem: Done!
-- Build Add Record Page frontend: Done!
+1. Build Home Page: Done!
+2. Figure out how to navigate: Done!
+3. Get familiar with Retool: Done!
+4. Fix the hard code IP address problem: Done!
+5. Build Add Record Page frontend: Done!
+6. Handle insert sql query to retool database: Done!
 
 ## General Structure
 ### Frontend
