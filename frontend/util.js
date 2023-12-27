@@ -1,5 +1,5 @@
 import moment from "moment";
-import { Dimensions } from "react-native";
+import { Alert, Dimensions } from "react-native";
 
 // Baseball
 export const IP = "192.168.1.141";
@@ -39,7 +39,7 @@ export const createRecord = (name, category, amount, time, isIncome) => {
       return response.text();
     })
     .then((data) => {
-      alert(data);
+      Alert.alert('Record created successfully!');
       // getData();
     });
 };

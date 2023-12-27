@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, createRef } from "react";
 import {
   Text,
   View,
@@ -24,6 +24,9 @@ const toggleWidth = componentWidth;
 const toggleHeight = Math.max(windowHeight * 0.04, 40);
 
 const AddScreen = ({ navigation }) => {
+  const nameRef = createRef();
+  const amountRef = createRef();
+
   // Switch on = income, off = expense
   const [isIncome, setIsIncome] = useState(false);
   const [name, setName] = useState("");
@@ -36,6 +39,13 @@ const AddScreen = ({ navigation }) => {
     setTime(time);
     setDatePickerVisible(false);
   };
+
+  const resetValues = () => {
+    setIsIncome(false);
+    nameRef.current.clear();
+    amountRef.current.clear();
+    setTime(null);
+  }
 
   const [category, setCategory] = useState([]);
   const allTypes = [
@@ -72,6 +82,7 @@ const AddScreen = ({ navigation }) => {
         <View style={[styles.inputBoxContainer, styles.underline]}>
           <Text style={styles.inputTitle}>Name</Text>
           <TextInput
+            ref={nameRef}
             style={styles.inputField}
             placeholder="Press to enter name"
             onChangeText={(name) => setName(name)}
@@ -81,6 +92,7 @@ const AddScreen = ({ navigation }) => {
         <View style={[styles.inputBoxContainer, styles.underline]}>
           <Text style={styles.inputTitle}>Amount</Text>
           <TextInput
+            ref={amountRef}
             style={styles.inputField}
             keyboardType="numeric"
             placeholder="Press to enter amount"
@@ -124,7 +136,7 @@ const AddScreen = ({ navigation }) => {
         <View>
           <Button
             title="Add Record"
-            onPress={() => createRecord(name, category, amount, time, isIncome)}
+            onPress={() => { createRecord(name, category, amount, time, isIncome); resetValues() }}
           />
         </View>
         {/* Debug */}
