@@ -1,10 +1,10 @@
 import { React, useState, useEffect } from 'react';
-import { Button, View, Text, StyleSheet, ScrollView } from 'react-native';
+import { Button, View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { getData, formatShortDateTime, fontSize, windowHeight } from './util'
 
 const HomeScreen = ({ navigation }) => {
   const [totalBalance, setTotalBalance] = useState(0)
-  const [transactions, setTransactions] = useState([])
+  const [transactions, setTransactions] = useState(null)
 
   const updateTotalBalance = (transactions) => {
     let total = 0
@@ -19,32 +19,44 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    updateTotalBalance(transactions);
+    if (transactions != null)
+      updateTotalBalance(transactions);
   }, [transactions]);
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer} onScroll={() => getData(setTransactions)} scrollEventThrottle={500}>
       <View style={styles.contentArea}>
         <Text style={styles.title}>FYP Finance App</Text>
-        <View style={styles.totalBalanceContainer}>
-          <Text style={styles.totalBalanceText}>Total Balance: ${totalBalance}</Text>
-        </View>
-        <Text style={styles.recentTransactions}>Recent Transactions</Text>
-        {transactions.slice(-5).map((transaction, index) => (
-          <View key={index} style={styles.transactionContainer}>
-            <Text style={[styles.largeTransactionText, styles.topLeft,]}>{transaction.name}</Text>
-            <Text style={[styles.largeTransactionText, styles.topRight,]}>${transaction.amount}</Text>
-            <Text style={[styles.smallTransactionText, styles.bottomLeft,]}>{transaction.category}</Text>
-            <Text style={[styles.smallTransactionText, styles.bottomRight]}>{formatShortDateTime(transaction.time)}</Text>
-          </View>
-        ))}
-        <Button
-          title="Go to Bubujai Detail Page"
-          onPress={() =>
-            navigation.navigate('Details', { name: 'BubuJai' })
-          }
-        />
-        <Button title="refresh" onPress={() => { getData(setTransactions); updateTotalBalance(transactions) }} />
+        {transactions == null ? (
+          <>
+            {/* Renders the loading screen */}
+            <ActivityIndicator size="large" color="#00ff00" />
+            <Text style={styles.title}>Loading...</Text>
+          </>
+        ) : (
+          <>
+            {/* Renders the last 5 transactions */}
+            <View style={styles.totalBalanceContainer}>
+              <Text style={styles.totalBalanceText}>Total Balance: ${totalBalance}</Text>
+            </View>
+            <Text style={styles.recentTransactions}>Recent Transactions</Text>
+            {transactions.slice(-5).map((transaction, index) => (
+              <View key={index} style={styles.transactionContainer}>
+                <Text style={[styles.largeTransactionText, styles.topLeft,]}>{transaction.name}</Text>
+                <Text style={[styles.largeTransactionText, styles.topRight,]}>${transaction.amount}</Text>
+                <Text style={[styles.smallTransactionText, styles.bottomLeft,]}>{transaction.category}</Text>
+                <Text style={[styles.smallTransactionText, styles.bottomRight]}>{formatShortDateTime(transaction.time)}</Text>
+              </View>
+            ))}
+            {/* <Button */}
+            {/*   title="Go to Bubujai Detail Page" */}
+            {/*   onPress={() => */}
+            {/*     navigation.navigate('Details', { name: 'BubuJai' }) */}
+            {/*   } */}
+            {/* /> */}
+            {/* <Button title="refresh" onPress={() => { getData(setTransactions); updateTotalBalance(transactions) }} /> */}
+          </>
+        )}
       </View>
     </ScrollView>
   );
