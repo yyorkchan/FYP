@@ -30,7 +30,7 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.totalBalanceText}>Total Balance: ${totalBalance}</Text>
         </View>
         <Text style={styles.recentTransactions}>Recent Transactions</Text>
-        {transactions.map((transaction, index) => (
+        {transactions.slice(-5).map((transaction, index) => (
           <View key={index} style={styles.transactionContainer}>
             <Text style={[styles.largeTransactionText, styles.topLeft,]}>{transaction.name}</Text>
             <Text style={[styles.largeTransactionText, styles.topRight,]}>${transaction.amount}</Text>

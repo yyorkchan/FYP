@@ -20,7 +20,8 @@ export const getData = (setData) => {
       return response.text();
     })
     .then((data) => {
-      parsedData = JSON.parse(data);
+      let parsedData = JSON.parse(data);
+      parsedData.sort((a, b) => new Date(a.time) - new Date(b.time));
       setData(parsedData);
     });
 };
