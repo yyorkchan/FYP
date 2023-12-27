@@ -16,11 +16,14 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     getData(setTransactions);
+  }, []);
+
+  useEffect(() => {
     updateTotalBalance(transactions);
   }, [transactions]);
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <ScrollView contentContainerStyle={styles.scrollContainer} onScroll={() => getData(setTransactions)} scrollEventThrottle={500}>
       <View style={styles.contentArea}>
         <Text style={styles.title}>FYP Finance App</Text>
         <View style={styles.totalBalanceContainer}>
