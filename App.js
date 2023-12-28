@@ -10,11 +10,6 @@ import AddScreen from './frontend/AddScreen.js';
 const Tab = createBottomTabNavigator();
 
 
-const DetailsScreen = ({ navigation, route }) => {
-  return <Text>This is {route.params.name}'s Details</Text>;
-};
-
-
 export default function App() {
   // console.log(Dimensions.get('window').width)
   return (
@@ -26,16 +21,6 @@ export default function App() {
           options={{
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="home" color={color} size={size} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Details"
-          component={DetailsScreen}
-          initialParams={{ name: "Bubu" }}
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="eye" color={color} size={size} />
             ),
           }}
         />
