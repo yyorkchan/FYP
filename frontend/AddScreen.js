@@ -1,21 +1,21 @@
-import { React, useState } from "react";
+import { React, useState, createRef } from "react";
 import {
-  Text,
-  View,
-  StyleSheet,
-  TextInput,
-  ScrollView,
   Button,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
-import SwitchToggle from "react-native-switch-toggle";
-import { SelectList } from "react-native-dropdown-select-list";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { SelectList } from "react-native-dropdown-select-list";
+import SwitchToggle from "react-native-switch-toggle";
 import {
-  formatDateTime,
   createRecord,
+  fontSize,
+  formatDateTime,
   windowHeight,
   windowWidth,
-  fontSize,
 } from "./util";
 
 // Declare UI size constants
@@ -24,18 +24,17 @@ const toggleWidth = componentWidth;
 const toggleHeight = Math.max(windowHeight * 0.04, 40);
 
 const AddScreen = ({ navigation }) => {
-  // Switch on = income, off = expense
+  // References to input fields for manipulating their values
+  const nameRef = createRef();
+  const amountRef = createRef();
+
+  // Reactive states
   const [isIncome, setIsIncome] = useState(false);
   const [name, setName] = useState("");
   const [amount, setAmount] = useState(0);
 
   const [time, setTime] = useState(null);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
-
-  const handleConfirm = (time) => {
-    setTime(time);
-    setDatePickerVisible(false);
-  };
 
   const [category, setCategory] = useState([]);
   const allTypes = [
@@ -51,6 +50,19 @@ const AddScreen = ({ navigation }) => {
     { key: "10", value: "Travel" },
     { key: "11", value: "Shopping" },
   ];
+
+  const handleConfirm = (time) => {
+    setTime(time);
+    setDatePickerVisible(false);
+  };
+
+  // Clear input fields after submitting a record
+  const resetValues = () => {
+    setIsIncome(false);
+    nameRef.current.clear();
+    amountRef.current.clear();
+    setTime(null);
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -72,6 +84,7 @@ const AddScreen = ({ navigation }) => {
         <View style={[styles.inputBoxContainer, styles.underline]}>
           <Text style={styles.inputTitle}>Name</Text>
           <TextInput
+            ref={nameRef}
             style={styles.inputField}
             placeholder="Press to enter name"
             onChangeText={(name) => setName(name)}
@@ -81,6 +94,7 @@ const AddScreen = ({ navigation }) => {
         <View style={[styles.inputBoxContainer, styles.underline]}>
           <Text style={styles.inputTitle}>Amount</Text>
           <TextInput
+            ref={amountRef}
             style={styles.inputField}
             keyboardType="numeric"
             placeholder="Press to enter amount"
@@ -124,7 +138,10 @@ const AddScreen = ({ navigation }) => {
         <View>
           <Button
             title="Add Record"
-            onPress={() => createRecord(name, category, amount, time, isIncome)}
+            onPress={() => {
+              createRecord(name, category, amount, time, isIncome);
+              resetValues();
+            }}
           />
         </View>
         {/* Debug */}

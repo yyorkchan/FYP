@@ -1,7 +1,7 @@
 // Create an express server that listens on port 3000
 const express = require("express");
 const app = express();
-const port = 3000;
+const PORT = 3000;
 
 const db = require("./retool");
 
@@ -29,16 +29,17 @@ app.get("/", (req, res) => {
     });
 });
 
-app.post('/insert', (req, res) => {
+// POST request to add a record to the database
+app.post("/insert", (req, res) => {
   db.addRecord(req.body)
-    .then(response => {
+    .then((response) => {
       res.status(200).send(response);
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).send(error);
-    })
-})
+    });
+});
 
-app.listen(port, () => {
-  console.log(`App running on port ${port}.`);
+app.listen(PORT, () => {
+  console.log(`App running on port ${PORT}.`);
 });
