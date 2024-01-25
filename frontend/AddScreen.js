@@ -3,6 +3,7 @@ import {
   Button,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   View,
@@ -49,6 +50,15 @@ const AddScreen = ({ navigation }) => {
     { key: "9", value: "Transport" },
     { key: "10", value: "Travel" },
     { key: "11", value: "Shopping" },
+  ];
+
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [recurringFreq, setRecurringFreq] = useState([]);
+  const recurringFreqs = [
+    { key: "1", value: "Daily" },
+    { key: "2", value: "Weekly" },
+    { key: "3", value: "Monthly" },
+    { key: "4", value: "Yearly" },
   ];
 
   const handleConfirm = (time) => {
@@ -134,6 +144,30 @@ const AddScreen = ({ navigation }) => {
             dropdownTextStyles={styles.inputTitle}
           />
         </View>
+        {/* Input field for recurring transaction */}
+        <View style={[styles.inputBoxContainer, styles.row]}>
+          <Text style={styles.inputTitle}>Recurring Record</Text>
+          <Switch
+            onValueChange={() => setIsRecurring(!isRecurring)}
+            value={isRecurring}
+          />
+        </View>
+        {/* Input field for recurring type */}
+        {isRecurring && (
+          <View style={styles.inputBoxContainer}>
+            <Text style={styles.inputTitle}>Recurring Frequency</Text>
+            <SelectList
+              data={recurringFreqs}
+              save="value"
+              setSelected={(value) => setRecurringFreq(value)}
+              placeholder="Press to select frequency"
+              search={false}
+              maxHeight={windowHeight * 0.2}
+              inputStyles={styles.inputField}
+              dropdownTextStyles={styles.inputTitle}
+            />
+          </View>
+        )}
         {/* Button to add transaction */}
         <View>
           <Button
@@ -203,6 +237,10 @@ const styles = StyleSheet.create({
     fontSize: fontSize * 1.2,
     color: "black",
     fontWeight: "bold",
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   scrollContainer: {
     flexGrow: 1,
