@@ -14,6 +14,39 @@ export const windowHeight = Dimensions.get("window").height;
 
 export const fontSize = Math.min(windowWidth, windowHeight) * 0.045;
 
+const getRecurringRecords = (records) => {
+  return records.filter((record) => record.is_recurring == "true");
+};
+
+const getNonRecurringRecords = (records) => {
+  return records.filter((record) => record.is_recurring == "false");
+};
+
+// Converts a recurring record to an array of repeated non-recurring records for display
+// The database only stores them as a single record, they are later expanded after being fetched
+const getExpandedRecords = (record) => {
+  const timeNow = moment();
+  const timeCreate = moment(record.time);
+
+  // Map frequency to moment.js key
+  const freqToKey = {
+    Daily: "d",
+    Weekly: "w",
+    Monthly: "M",
+    Yearly: "y",
+  };
+
+  let expandedRecords = [];
+  while (timeCreate.isBefore(timeNow)) {
+    expandedRecords.push({
+      ...record,
+      time: timeCreate.format(),
+    });
+    timeCreate.add(1, freqToKey[record.recurring_freq]);
+  }
+  return expandedRecords;
+};
+
 // Fetches data from the server and sorts it by time
 export const getData = (setData) => {
   fetch(`http://${IP}:${PORT}`)
@@ -22,16 +55,37 @@ export const getData = (setData) => {
     })
     .then((data) => {
       let parsedData = JSON.parse(data);
-      parsedData.sort((a, b) => new Date(a.time) - new Date(b.time));
-      setData(parsedData);
+      let processedData = getNonRecurringRecords(parsedData);
+      const recurringRecords = getRecurringRecords(parsedData);
+      recurringRecords.forEach((record) => {
+        processedData.push(...getExpandedRecords(record));
+      });
+      processedData.sort((a, b) => new Date(a.time) - new Date(b.time));
+      setData(processedData);
+      // console.log(processedData);
     });
 };
 
 // Creates and add a record in the database
-export const createRecord = (name, category, amount, time, isIncome, isRecurring, recurringFreq) => {
+export const createRecord = (
+  name,
+  category,
+  amount,
+  time,
+  isIncome,
+  isRecurring,
+  recurringFreq
+) => {
   // If isIncome is true, the amount is the same
   // If isIncome is false, the amount is negative the amount
-  const reqObj = { name, category, amount: amount * (2 * isIncome - 1), time, isRecurring, recurringFreq };
+  const reqObj = {
+    name,
+    category,
+    amount: amount * (2 * isIncome - 1),
+    time,
+    isRecurring,
+    recurringFreq,
+  };
   fetch(`http://${IP}:${PORT}/insert`, {
     method: "POST",
     headers: {
