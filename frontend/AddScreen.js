@@ -45,11 +45,18 @@ const AddScreen = ({ navigation }) => {
     { key: "4", value: "Family" },
     { key: "5", value: "Food" },
     { key: "6", value: "Grocery" },
-    { key: "7", value: "Medical" },
-    { key: "8", value: "Others" },
-    { key: "9", value: "Transport" },
-    { key: "10", value: "Travel" },
-    { key: "11", value: "Shopping" },
+    { key: "7", value: "Housing" },
+    { key: "8", value: "Insurance" },
+    { key: "9", value: "Medical" },
+    { key: "10", value: "Others" },
+    { key: "11", value: "Pet" },
+    { key: "12", value: "Saving" },
+    { key: "13", value: "Shopping" },
+    { key: "14", value: "Salary" },
+    { key: "15", value: "Sport" },
+    { key: "16", value: "Taxes" },
+    { key: "17", value: "Transport" },
+    { key: "18", value: "Travel" },
   ];
 
   const [isRecurring, setIsRecurring] = useState(false);
@@ -138,7 +145,7 @@ const AddScreen = ({ navigation }) => {
             save="value"
             setSelected={(value) => setCategory(value)}
             placeholder="Press to select type"
-            search={false}
+            search={true}
             maxHeight={windowHeight * 0.2}
             inputStyles={styles.inputField}
             dropdownTextStyles={styles.inputTitle}
