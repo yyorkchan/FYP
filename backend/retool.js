@@ -28,10 +28,10 @@ const getRecord = async () => {
 // Add a new record to the retool database
 const addRecord = (body) => {
   return new Promise((resolve, reject) => {
-    const { name, category, amount, time } = body;
+    const { name, category, amount, time, isRecurring, recurringFreq } = body;
     pool.query(
-      "INSERT INTO records (name, category, amount, time) VALUES ($1, $2, $3, $4) RETURNING *",
-      [name, category, amount, time],
+      "INSERT INTO records (name, category, amount, time, is_recurring, recurring_freq) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [name, category, amount, time, isRecurring, recurringFreq],
       (error, results) => {
         if (error) {
           reject(error);

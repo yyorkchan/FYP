@@ -148,7 +148,10 @@ const AddScreen = ({ navigation }) => {
         <View style={[styles.inputBoxContainer, styles.row]}>
           <Text style={styles.inputTitle}>Recurring Record</Text>
           <Switch
-            onValueChange={() => setIsRecurring(!isRecurring)}
+            onValueChange={() => {
+              setIsRecurring(!isRecurring);
+              setRecurringFreq(null);
+            }}
             value={isRecurring}
           />
         </View>
@@ -173,7 +176,15 @@ const AddScreen = ({ navigation }) => {
           <Button
             title="Add Record"
             onPress={() => {
-              createRecord(name, category, amount, time, isIncome);
+              createRecord(
+                name,
+                category,
+                amount,
+                time,
+                isIncome,
+                isRecurring,
+                recurringFreq
+              );
               resetValues();
             }}
           />
@@ -192,6 +203,7 @@ const AddScreen = ({ navigation }) => {
         {/*     date time = {formatDateTime(time)} */}
         {/*   </Text> */}
         {/*   <Text style={styles.inputTitle}>type = {category}</Text> */}
+        {/* <Text style={styles.inputTitle}>Recurring Frequency = {recurringFreq}</Text> */}
         {/* </View> */}
       </View>
     </ScrollView>

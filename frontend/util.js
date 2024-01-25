@@ -28,10 +28,10 @@ export const getData = (setData) => {
 };
 
 // Creates and add a record in the database
-export const createRecord = (name, category, amount, time, isIncome) => {
+export const createRecord = (name, category, amount, time, isIncome, isRecurring, recurringFreq) => {
   // If isIncome is true, the amount is the same
   // If isIncome is false, the amount is negative the amount
-  const reqObj = { name, category, amount: amount * (2 * isIncome - 1), time };
+  const reqObj = { name, category, amount: amount * (2 * isIncome - 1), time, isRecurring, recurringFreq };
   fetch(`http://${IP}:${PORT}/insert`, {
     method: "POST",
     headers: {
