@@ -103,7 +103,7 @@ export const createRecord = (
 
 // Converts a JS date object to Hong Kong date and time without year
 export const formatShortDateTime = (time) => {
-  return moment(time).utcOffset(480).format("MMM DD HH:mm");
+  return moment(time).utcOffset(480).format("MMM DD, YY HH:mm");
 };
 
 // Converts a JS date object to Hong Kong date and time with year

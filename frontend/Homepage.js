@@ -50,7 +50,7 @@ const HomeScreen = ({ navigation }) => {
             {/* Renders the total balance */}
             <View style={styles.totalBalanceContainer}>
               <Text style={styles.totalBalanceText}>
-                Total Balance: ${totalBalance}
+                Total Balance: ${totalBalance.toFixed(1)}
               </Text>
             </View>
             {/* Renders the most recent 5 transactions */}
