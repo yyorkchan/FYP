@@ -101,12 +101,12 @@ export const createRecord = (
     });
 };
 
-// Converts a JS date object to Hong Kong date and time without year
+// Converts a JS date object to short Hong Kong date and time
 export const formatShortDateTime = (time) => {
   return moment(time).utcOffset(480).format("MMM DD, YY HH:mm");
 };
 
-// Converts a JS date object to Hong Kong date and time with year
+// Converts a JS date object to Hong Kong date and time
 export const formatDateTime = (time) => {
   return moment(time).utcOffset(480).format("lll");
 };

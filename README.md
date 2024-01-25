@@ -7,12 +7,12 @@ This is Our FYP. ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡
 - Run `yarn` After clone
 - ALWAYS USE `yarn add` to install packages, avoid using `npm install`
 - Use **Expo Go** to Debug
-- Use `node index.js` in /backend to start express server
+- Run `node index.js` in /backend to start express server
 
 ## Current To-Do List:
 Next up (๑•̀ㅂ•́)و✧ 🔥
-- Start working on interim present ppt: Next up
-- Start working on interim report: Next Next up
+- Implement delete and filter in Home Screen
+- Research what machine learning model to use
 
 Done!  ✧◝(⁰▿⁰)◜✧ ✅
 1. Build Home Page: Done!
@@ -21,6 +21,9 @@ Done!  ✧◝(⁰▿⁰)◜✧ ✅
 4. Fix the hard code IP address problem: Done!
 5. Build Add Record Page frontend: Done!
 6. Handle insert sql query to retool database: Done!
+7. Start working on interim present ppt: Next up
+8. Start working on interim report: Next Next up
+9. Add support for recurring records
 
 ## General Structure
 ### Frontend
