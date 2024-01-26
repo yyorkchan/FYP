@@ -3,9 +3,11 @@ import { Alert, Dimensions } from "react-native";
 
 // IP address of the server
 // Baseball
-export const IP = "192.168.1.141";
+// export const IP = "192.168.1.141";
+
 // York
-// export const IP = '192.168.0.169'
+export const IP = '192.168.0.169'
+
 export const PORT = 3000;
 
 // Declare UI size constants
@@ -38,17 +40,26 @@ const getExpandedRecords = (record) => {
 
   let expandedRecords = [];
   while (timeCreate.isBefore(timeNow)) {
-    expandedRecords.push({
-      ...record,
-      time: timeCreate.format(),
-    });
+    // if first recurring event is deleted, skip it
+    if (!record.exception_records.includes(timeCreate.format())) {
+      expandedRecords.push({
+        ...record,
+        time: timeCreate.format(),
+      });
+    }
+    // if (record.exception_records.length != 0) { console.log(record.exception_records) }
     timeCreate.add(1, freqToKey[record.recurring_freq]);
+    // add 1 day/week/month/year to timeCreate until it is not excepted
+    while (record.exception_records.includes(timeCreate.format())) {
+      timeCreate.add(1, freqToKey[record.recurring_freq]);
+    }
   }
   return expandedRecords;
 };
 
 // Fetches data from the server and sorts it by time
 export const getData = (setData) => {
+  // console.log("Fetching data...");
   fetch(`http://${IP}:${PORT}`)
     .then((response) => {
       return response.text();
@@ -61,8 +72,8 @@ export const getData = (setData) => {
         processedData.push(...getExpandedRecords(record));
       });
       processedData.sort((a, b) => new Date(a.time) - new Date(b.time));
-      setData(processedData);
       // console.log(processedData);
+      setData(processedData);
     });
 };
 
@@ -100,6 +111,34 @@ export const createRecord = (
       Alert.alert("Record created successfully!");
     });
 };
+
+// Delete a record in the database
+export const deleteRecord = (body, setData) => {
+  // console.log(body);
+  setData(null); // Set loading
+  fetch(`http://${IP}:${PORT}/delete`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  })
+    .then((response) => {
+      // console.log(response.text());
+      return response.text();
+    })
+    .then((data) => {
+      Alert.alert("Record deleted successfully!");
+      console.log(data);
+      // Call getData to update the records and stop loading
+      getData(setData);
+
+    })
+    .catch((error) => {
+      console.log(error)
+      getData(setData);
+    });
+}
 
 // Converts a JS date object to short Hong Kong date and time
 export const formatShortDateTime = (time) => {

@@ -40,6 +40,18 @@ app.post("/insert", (req, res) => {
     });
 });
 
+// DELETE request to delete a record from the database
+app.delete("/delete", (req, res) => {
+  // console.log(req.body, "endpoint")
+  db.deleteRecord(req.body)
+    .then((response) => {
+      res.status(200).send(response);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
+    });
+});
+
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}.`);
 });

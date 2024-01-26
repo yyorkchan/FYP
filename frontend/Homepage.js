@@ -1,12 +1,15 @@
 import { React, useState, useEffect } from "react";
 import {
   ActivityIndicator,
+  Alert,
+  Button,
   ScrollView,
   StyleSheet,
   Text,
   View,
+  TouchableOpacity,
 } from "react-native";
-import { getData, formatShortDateTime, fontSize, windowHeight } from "./util";
+import { getData, deleteRecord, formatShortDateTime, fontSize, windowHeight } from "./util";
 
 const HomeScreen = ({ navigation }) => {
   // Reactive states
@@ -21,9 +24,43 @@ const HomeScreen = ({ navigation }) => {
     setTotalBalance(total);
   };
 
+  const handleDeleteTransaction = (transaction) => {
+    Alert.alert(
+      "Delete Transaction",
+      `Are you sure you want to delete the transaction: ${transaction.name}?`,
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete This Record",
+          style: "destructive",
+          // Call deleteRecord function to delete the transaction
+          onPress: () => {
+            deleteRecord(transaction, setTransactions);
+          },
+        },
+        // If the transaction is recurring, add an option to delete all recurring transactions
+        transaction.is_recurring == "true" ?
+          {
+            text: "Delete All Recurring Records",
+            style: "destructive",
+            // Call deleteRecord function to delete all recurring transaction
+            onPress: () => {
+              transaction.is_recurring = "false"; // Magic
+              deleteRecord(transaction, setTransactions);
+            },
+          }
+          : null,
+      ]
+    );
+  };
+
   // Get records from database on page load
   useEffect(() => {
     getData(setTransactions);
+    // console.log(transactions);
   }, []);
 
   // Update total balance when transactions are updated
@@ -56,7 +93,12 @@ const HomeScreen = ({ navigation }) => {
             {/* Renders the most recent 5 transactions */}
             <Text style={styles.recentTransactions}>Recent Transactions</Text>
             {transactions.slice(-5).map((transaction, index) => (
-              <View key={index} style={styles.transactionContainer}>
+              <TouchableOpacity key={index} style={styles.transactionContainer}
+                // Delete transaction on long press
+                onLongPress={() => {
+                  handleDeleteTransaction(transaction);
+                }}
+              >
                 <Text style={[styles.largeTransactionText, styles.topLeft]}>
                   {transaction.name}
                 </Text>
@@ -69,7 +111,7 @@ const HomeScreen = ({ navigation }) => {
                 <Text style={[styles.smallTransactionText, styles.bottomRight]}>
                   {formatShortDateTime(transaction.time)}
                 </Text>
-              </View>
+              </TouchableOpacity>
             ))}
             {/* <Button */}
             {/*   title="Go to Bubujai Detail Page" */}
@@ -77,7 +119,10 @@ const HomeScreen = ({ navigation }) => {
             {/*     navigation.navigate('Details', { name: 'BubuJai' }) */}
             {/*   } */}
             {/* /> */}
-            {/* <Button title="refresh" onPress={() => { getData(setTransactions); updateTotalBalance(transactions) }} /> */}
+            {/* <Button title="refresh" onPress={() => {
+              getData(setTransactions);
+              updateTotalBalance(transactions);
+            }} /> */}
           </>
         )}
       </View>
