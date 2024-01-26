@@ -25,35 +25,36 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleDeleteTransaction = (transaction) => {
+    const buttons = [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Delete This Record",
+        style: "destructive",
+        // Call deleteRecord function to delete the transaction
+        onPress: () => {
+          deleteRecord(transaction, setTransactions);
+        },
+      },
+    ];
+
+    if (transaction.is_recurring == "true") {
+      buttons.push({
+        text: "Delete All Recurring Records",
+        style: "destructive",
+        // Call deleteRecord function to delete all recurring transaction
+        onPress: () => {
+          transaction.is_recurring = "false"; // Magic
+          deleteRecord(transaction, setTransactions);
+        },
+      });
+    }
+
     Alert.alert(
       "Delete Transaction",
-      `Are you sure you want to delete the transaction: ${transaction.name}?`,
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Delete This Record",
-          style: "destructive",
-          // Call deleteRecord function to delete the transaction
-          onPress: () => {
-            deleteRecord(transaction, setTransactions);
-          },
-        },
-        // If the transaction is recurring, add an option to delete all recurring transactions
-        transaction.is_recurring == "true" ?
-          {
-            text: "Delete All Recurring Records",
-            style: "destructive",
-            // Call deleteRecord function to delete all recurring transaction
-            onPress: () => {
-              transaction.is_recurring = "false"; // Magic
-              deleteRecord(transaction, setTransactions);
-            },
-          }
-          : null,
-      ]
+      `Are you sure you want to delete the transaction: ${transaction.name}?`, buttons
     );
   };
 
