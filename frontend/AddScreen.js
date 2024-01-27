@@ -1,5 +1,6 @@
 import { React, useState, createRef } from "react";
 import {
+  Alert,
   Button,
   ScrollView,
   StyleSheet,
@@ -37,7 +38,7 @@ const AddScreen = ({ navigation }) => {
   const [time, setTime] = useState(null);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
-  const [category, setCategory] = useState([]);
+  const [category, setCategory] = useState(null);
   const allTypes = [
     { key: "1", value: "Bills" },
     { key: "2", value: "Education" },
@@ -60,7 +61,7 @@ const AddScreen = ({ navigation }) => {
   ];
 
   const [isRecurring, setIsRecurring] = useState(false);
-  const [recurringFreq, setRecurringFreq] = useState([]);
+  const [recurringFreq, setRecurringFreq] = useState(null);
   const recurringFreqs = [
     { key: "1", value: "Daily" },
     { key: "2", value: "Weekly" },
@@ -81,11 +82,56 @@ const AddScreen = ({ navigation }) => {
     setRecurrPickerVisible(false);
   };
 
+  const handleAddRecord = (
+    name,
+    category,
+    amount,
+    time,
+    isIncome,
+    isRecurring,
+    recurringFreq,
+    recurringEndTime,
+  ) => {
+    if (name == "") {
+      Alert.alert("Please fill in name");
+      return;
+    } else if (amount == 0) {
+      Alert.alert("Please fill in a correct amount");
+      return;
+    } else if (time == null) {
+      Alert.alert("Please fill in time");
+      return;
+    } else if (category == null) {
+      Alert.alert("Please fill in category");
+      return;
+    } else if (isRecurring && recurringFreq == null) {
+      Alert.alert("Please fill in recurring frequency");
+      return;
+    } else if (isRecurring && recurringEndTime == null) {
+      Alert.alert("Please fill in recurring end time");
+      return;
+    } else {
+      createRecord(
+        name,
+        category,
+        amount,
+        time,
+        isIncome,
+        isRecurring,
+        recurringFreq,
+        recurringEndTime,
+      );
+      resetValues();
+    }
+  };
+
   // Clear input fields after submitting a record
   const resetValues = () => {
     setIsIncome(false);
     nameRef.current.clear();
+    setName("");
     amountRef.current.clear();
+    setAmount(0);
     setTime(null);
     setRecurringEndTime(null);
   };
@@ -212,8 +258,8 @@ const AddScreen = ({ navigation }) => {
         <View>
           <Button
             title="Add Record"
-            onPress={() => {
-              createRecord(
+            onPress={() =>
+              handleAddRecord(
                 name,
                 category,
                 amount,
@@ -222,9 +268,8 @@ const AddScreen = ({ navigation }) => {
                 isRecurring,
                 recurringFreq,
                 recurringEndTime,
-              );
-              resetValues();
-            }}
+              )
+            }
           />
         </View>
         {/* Debug */}
