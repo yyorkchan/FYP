@@ -40,13 +40,13 @@ const HomeScreen = ({ navigation }) => {
       },
     ];
 
-    if (transaction.is_recurring == "true") {
+    if (transaction.is_recurring) {
       buttons.push({
         text: "Delete All Recurring Records",
         style: "destructive",
         // Call deleteRecord function to delete all recurring transaction
         onPress: () => {
-          transaction.is_recurring = "false"; // Magic
+          transaction.is_recurring = false; // Magic
           deleteRecord(transaction, setTransactions);
         },
       });

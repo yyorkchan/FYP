@@ -3,10 +3,10 @@ import { Alert, Dimensions } from "react-native";
 
 // IP address of the server
 // Baseball
-// export const IP = "192.168.1.141";
+export const IP = "192.168.1.141";
 
 // York
-export const IP = '192.168.0.169'
+// export const IP = '192.168.0.169'
 
 export const PORT = 3000;
 
@@ -17,11 +17,11 @@ export const windowHeight = Dimensions.get("window").height;
 export const fontSize = Math.min(windowWidth, windowHeight) * 0.045;
 
 const getRecurringRecords = (records) => {
-  return records.filter((record) => record.is_recurring == "true");
+  return records.filter((record) => record.is_recurring);
 };
 
 const getNonRecurringRecords = (records) => {
-  return records.filter((record) => record.is_recurring == "false");
+  return records.filter((record) => !record.is_recurring);
 };
 
 // Converts a recurring record to an array of repeated non-recurring records for display

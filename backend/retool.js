@@ -54,7 +54,7 @@ const deleteRecord = (body) => {
     console.log(body, "retool");
     const { id, time, exception_records, is_recurring } = body;
     // If the record is_recurring, update exception_records
-    if (is_recurring == "true") {
+    if (is_recurring) {
       // Add time into exception_records JSON
       exception_records.push(time);
 
