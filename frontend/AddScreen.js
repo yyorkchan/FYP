@@ -68,9 +68,17 @@ const AddScreen = ({ navigation }) => {
     { key: "4", value: "Yearly" },
   ];
 
+  const [recurringEndTime, setRecurringEndTime] = useState(null);
+  const [isRecurrPickerVisible, setRecurrPickerVisible] = useState(false);
+
   const handleConfirm = (time) => {
     setTime(time);
     setDatePickerVisible(false);
+  };
+
+  const handleRecurrConfirm = (time) => {
+    setRecurringEndTime(time);
+    setRecurrPickerVisible(false);
   };
 
   // Clear input fields after submitting a record
@@ -79,6 +87,7 @@ const AddScreen = ({ navigation }) => {
     nameRef.current.clear();
     amountRef.current.clear();
     setTime(null);
+    setRecurringEndTime(null);
   };
 
   return (
@@ -178,6 +187,27 @@ const AddScreen = ({ navigation }) => {
             />
           </View>
         )}
+        {/* Input field for recurring end time */}
+        {isRecurring && (
+          <View style={styles.inputBoxContainer}>
+            <Text style={styles.inputTitle}>Recurring End Time</Text>
+            <Button
+              title={
+                recurringEndTime == null
+                  ? "Press to select recurring end time"
+                  : formatDateTime(recurringEndTime)
+              }
+              onPress={() => setRecurrPickerVisible(true)}
+            />
+            <DateTimePickerModal
+              isVisible={isRecurrPickerVisible}
+              mode="datetime"
+              onConfirm={handleRecurrConfirm}
+              onCancel={() => setRecurrPickerVisible(false)}
+              display="inline"
+            />
+          </View>
+        )}
         {/* Button to add transaction */}
         <View>
           <Button
@@ -190,7 +220,8 @@ const AddScreen = ({ navigation }) => {
                 time,
                 isIncome,
                 isRecurring,
-                recurringFreq
+                recurringFreq,
+                recurringEndTime,
               );
               resetValues();
             }}

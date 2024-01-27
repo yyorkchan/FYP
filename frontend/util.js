@@ -28,7 +28,9 @@ const getNonRecurringRecords = (records) => {
 // The database only stores them as a single record, they are later expanded after being fetched
 const getExpandedRecords = (record) => {
   const timeNow = moment();
+  const timeRecurringEnd = moment(record.recurring_end_time);
   const timeCreate = moment(record.time);
+  const timeEnd = moment.min(timeNow, timeRecurringEnd);
 
   // Map frequency to moment.js key
   const freqToKey = {
@@ -39,7 +41,7 @@ const getExpandedRecords = (record) => {
   };
 
   let expandedRecords = [];
-  while (timeCreate.isBefore(timeNow)) {
+  while (timeCreate.isBefore(timeEnd)) {
     // if first recurring event is deleted, skip it
     if (!record.exception_records.includes(timeCreate.format())) {
       expandedRecords.push({
@@ -85,7 +87,8 @@ export const createRecord = (
   time,
   isIncome,
   isRecurring,
-  recurringFreq
+  recurringFreq,
+  recurringEndTime,
 ) => {
   // If isIncome is true, the amount is the same
   // If isIncome is false, the amount is negative the amount
@@ -96,6 +99,7 @@ export const createRecord = (
     time,
     isRecurring,
     recurringFreq,
+    recurringEndTime,
   };
   fetch(`http://${IP}:${PORT}/insert`, {
     method: "POST",
