@@ -20,7 +20,10 @@ import {
 const HomeScreen = ({ navigation }) => {
   // Reactive states
   const [totalBalance, setTotalBalance] = useState(0);
+  // Internal storage for all transactions
   const [transactions, setTransactions] = useState(null);
+  // External storage for displaying transactions
+  const [displayTransactions, setDisplayTransactions] = useState(null);
   const [sortType, setSortType] = useState("Recent"); // ["Recent", "Amount", "Category"]
   const [sortOrder, setSortOrder] = useState("Ascending"); // ["Ascending", "Descending"]
   const [recordNumber, setRecordNumber] = useState(5);
@@ -110,7 +113,7 @@ const HomeScreen = ({ navigation }) => {
           : b.category.localeCompare(a.category);
       });
     }
-    setTransactions(sortedData);
+    return sortedData;
   };
 
   // Get records from database on page load
@@ -119,16 +122,19 @@ const HomeScreen = ({ navigation }) => {
     // console.log(transactions);
   }, []);
 
+  // Update displayTransactions when transactions are updated
+  // Or sortType/sortOrder/recordNumber are changed
+  useEffect(() => {
+    if (transactions != null) {
+      sortedData = sortTransactions(transactions, sortType, sortOrder);
+      setDisplayTransactions(sortedData.slice(0, recordNumber));
+    }
+  }, [transactions, sortType, sortOrder, recordNumber]);
+
   // Update total balance when transactions are updated
   useEffect(() => {
     if (transactions != null) updateTotalBalance(transactions);
   }, [transactions]);
-
-  useEffect(() => {
-    if (transactions != null)
-      sortTransactions(transactions, sortType, sortOrder);
-    console.log(transactions);
-  }, [sortType, sortOrder]);
 
   return (
     <ScrollView
@@ -140,7 +146,7 @@ const HomeScreen = ({ navigation }) => {
     >
       <View style={styles.contentArea}>
         <Text style={styles.title}>FYP Finance App</Text>
-        {transactions == null ? (
+        {displayTransactions == null ? (
           <>
             {/* Renders the loading screen */}
             <ActivityIndicator size="large" color="#add8e6" />
@@ -177,9 +183,9 @@ const HomeScreen = ({ navigation }) => {
                 }}
               />
             </View>
-            {/* Renders the most recent 5 transactions */}
-            <Text style={styles.recentTransactions}>Recent Transactions</Text>
-            {transactions.slice(-recordNumber).map((transaction, index) => (
+            {/* Renders the display transactions */}
+            <Text style={styles.recentTransactions}>Transactions</Text>
+            {displayTransactions.map((transaction, index) => (
               <TouchableOpacity
                 key={index}
                 style={styles.transactionContainer}
@@ -202,23 +208,6 @@ const HomeScreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
             ))}
-            {/* Test button for sorting */}
-            <Button
-              title="Sort"
-              onPress={() => {
-                sortTransactions(transactions, sortType, sortOrder);
-              }}
-            />
-            {/* <Button */}
-            {/*   title="Go to Bubujai Detail Page" */}
-            {/*   onPress={() => */}
-            {/*     navigation.navigate('Details', { name: 'BubuJai' }) */}
-            {/*   } */}
-            {/* /> */}
-            {/* <Button title="refresh" onPress={() => {
-              getData(setTransactions);
-              updateTotalBalance(transactions);
-            }} /> */}
           </>
         )}
       </View>
