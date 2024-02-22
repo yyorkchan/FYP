@@ -25,6 +25,27 @@ const componentWidth = windowWidth * 0.8;
 const toggleWidth = componentWidth;
 const toggleHeight = Math.max(windowHeight * 0.04, 40);
 
+export const allTypes = [
+  { key: "1", value: "Bills" },
+  { key: "2", value: "Education" },
+  { key: "3", value: "Entertainment" },
+  { key: "4", value: "Family" },
+  { key: "5", value: "Food" },
+  { key: "6", value: "Grocery" },
+  { key: "7", value: "Housing" },
+  { key: "8", value: "Insurance" },
+  { key: "9", value: "Medical" },
+  { key: "10", value: "Others" },
+  { key: "11", value: "Pet" },
+  { key: "12", value: "Saving" },
+  { key: "13", value: "Shopping" },
+  { key: "14", value: "Salary" },
+  { key: "15", value: "Sport" },
+  { key: "16", value: "Taxes" },
+  { key: "17", value: "Transport" },
+  { key: "18", value: "Travel" },
+];
+
 const AddScreen = ({ navigation }) => {
   // References to input fields for manipulating their values
   const nameRef = createRef();
@@ -39,26 +60,6 @@ const AddScreen = ({ navigation }) => {
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
   const [category, setCategory] = useState(null);
-  const allTypes = [
-    { key: "1", value: "Bills" },
-    { key: "2", value: "Education" },
-    { key: "3", value: "Entertainment" },
-    { key: "4", value: "Family" },
-    { key: "5", value: "Food" },
-    { key: "6", value: "Grocery" },
-    { key: "7", value: "Housing" },
-    { key: "8", value: "Insurance" },
-    { key: "9", value: "Medical" },
-    { key: "10", value: "Others" },
-    { key: "11", value: "Pet" },
-    { key: "12", value: "Saving" },
-    { key: "13", value: "Shopping" },
-    { key: "14", value: "Salary" },
-    { key: "15", value: "Sport" },
-    { key: "16", value: "Taxes" },
-    { key: "17", value: "Transport" },
-    { key: "18", value: "Travel" },
-  ];
 
   const [isRecurring, setIsRecurring] = useState(false);
   const [recurringFreq, setRecurringFreq] = useState(null);

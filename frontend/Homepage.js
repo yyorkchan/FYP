@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, createRef } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -10,13 +10,16 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { SelectList } from "react-native-dropdown-select-list";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { allTypes } from "./AddScreen";
 import {
   getData,
   deleteRecord,
-  formatShortDateTime,
   fontSize,
+  formatDateTime,
+  formatShortDateTime,
   windowHeight,
   windowWidth,
 } from "./util";
@@ -25,6 +28,9 @@ const componentWidth = windowWidth * 0.8;
 
 const HomeScreen = ({ navigation }) => {
   // Reactive states
+  const filterValueRef = createRef();
+  const filterNameRef = createRef();
+
   const [totalBalance, setTotalBalance] = useState(0);
   // Internal storage for all transactions
   const [transactions, setTransactions] = useState(null);
@@ -40,6 +46,15 @@ const HomeScreen = ({ navigation }) => {
   const [filterAmountValue, setFilterAmountValue] = useState(null);
   const [filterAmountMin, setFilterAmountMin] = useState(null);
   const [filterAmountMax, setFilterAmountMax] = useState(null);
+  const [filterStartTime, setFilterStartTime] = useState(null);
+  const [filterEndTime, setFilterEndTime] = useState(null);
+
+  const [isFilterStartVisible, setFilterStartVisible] = useState(false);
+  const [isFilterEndVisible, setFilterEndVisible] = useState(false);
+
+  const [filterCategory, setFilterCategory] = useState(null);
+
+  const [filterName, setFilterName] = useState(null);
 
   const filterAmountTypes = [
     { key: "1", value: "=" },
@@ -48,6 +63,16 @@ const HomeScreen = ({ navigation }) => {
     { key: "4", value: "between" },
   ];
 
+  const handleFilterStart = (time) => {
+    setFilterStartTime(time);
+    setFilterStartVisible(false);
+  };
+
+  const handleFilterEnd = (time) => {
+    setFilterEndTime(time);
+    setFilterEndVisible(false);
+  };
+
   const filterTransactionAmount = (
     transactions,
     filterAmountType,
@@ -55,7 +80,12 @@ const HomeScreen = ({ navigation }) => {
     filterAmountMin,
     filterAmountMax,
   ) => {
-    if (filterAmountType == null || filterAmountValue == null)
+    if (
+      filterAmountType == null ||
+      (filterAmountType !== "between" && filterAmountValue == null) ||
+      (filterAmountType === "between" &&
+        (filterAmountMin == null || filterAmountMax == null))
+    )
       return transactions;
     else if (filterAmountType === "=") {
       return transactions.filter(
@@ -76,6 +106,33 @@ const HomeScreen = ({ navigation }) => {
           transaction.amount <= filterAmountMax,
       );
     }
+  };
+
+  const filterTransactionTime = (
+    transactions,
+    filterStartTime,
+    filterEndTime,
+  ) => {
+    if (filterStartTime == null || filterEndTime == null) return transactions;
+    return transactions.filter(
+      (transaction) =>
+        new Date(transaction.time) >= filterStartTime &&
+        new Date(transaction.time) <= filterEndTime,
+    );
+  };
+
+  const filterTransactionCategory = (transactions, filterCategory) => {
+    if (filterCategory == null) return transactions;
+    return transactions.filter(
+      (transaction) => transaction.category === filterCategory,
+    );
+  };
+
+  const filterTransactionName = (transactions, filterName) => {
+    if (filterName == null) return transactions;
+    return transactions.filter((transaction) =>
+      transaction.name.toLowerCase().includes(filterName.toLowerCase()),
+    );
   };
 
   const updateTotalBalance = (transactions) => {
@@ -169,8 +226,14 @@ const HomeScreen = ({ navigation }) => {
   const resetFilter = () => {
     setFilterAmountType("=");
     setFilterAmountValue(null);
+    if (filterValueRef.current != null) filterValueRef.current.clear();
     setFilterAmountMin(null);
     setFilterAmountMax(null);
+    setFilterStartTime(null);
+    setFilterEndTime(null);
+    setFilterCategory(null);
+    setFilterName(null);
+    filterNameRef.current.clear();
   };
 
   // Get records from database on page load
@@ -190,6 +253,13 @@ const HomeScreen = ({ navigation }) => {
         filterAmountMin,
         filterAmountMax,
       );
+      filteredData = filterTransactionTime(
+        filteredData,
+        filterStartTime,
+        filterEndTime,
+      );
+      filteredData = filterTransactionCategory(filteredData, filterCategory);
+      filteredData = filterTransactionName(filteredData, filterName);
       sortedData = sortTransactions(filteredData, sortType, sortOrder);
       setDisplayTransactions(sortedData.slice(0, recordNumber));
     }
@@ -203,6 +273,10 @@ const HomeScreen = ({ navigation }) => {
     filterAmountValue,
     filterAmountMin,
     filterAmountMax,
+    filterStartTime,
+    filterEndTime,
+    filterCategory,
+    filterName,
   ]);
 
   // Update total balance when transactions are updated
@@ -236,20 +310,13 @@ const HomeScreen = ({ navigation }) => {
             </View>
             {/* Renders the toolbar */}
             <View style={styles.rowBar}>
+              <Text style={styles.inputTitle}>Sort by</Text>
               <Button
                 title={sortType}
                 onPress={() => {
                   nextSortType(sortType);
                 }}
               />
-              <Button
-                title={recordNumber.toString()}
-                onPress={() => {
-                  nextRecordNumber(recordNumber);
-                }}
-              />
-            </View>
-            <View style={styles.rowBar}>
               <Button
                 title={sortOrder}
                 onPress={() => {
@@ -258,11 +325,19 @@ const HomeScreen = ({ navigation }) => {
                     : setSortOrder("Ascending");
                 }}
               />
+            </View>
+            <View style={styles.rowBar}>
+              <Text style={styles.inputTitle}>Number of records</Text>
+              <Button
+                title={recordNumber.toString()}
+                onPress={() => {
+                  nextRecordNumber(recordNumber);
+                }}
+              />
               {/* Toggle for filtering */}
               <TouchableOpacity
                 onPress={() => {
                   setFilterOn(!filterOn);
-                  resetFilter();
                 }}
               >
                 <MaterialCommunityIcons
@@ -288,8 +363,9 @@ const HomeScreen = ({ navigation }) => {
                   />
                   {filterAmountType !== "between" && (
                     <TextInput
-                      style={[styles.inputField, styles.underline]}
-                      placeholder="Value"
+                      ref={filterValueRef}
+                      style={styles.inputField}
+                      placeholder="Amount value"
                       onChangeText={(value) => setFilterAmountValue(value)}
                     />
                   )}
@@ -297,18 +373,78 @@ const HomeScreen = ({ navigation }) => {
                 {filterAmountType === "between" && (
                   <View style={styles.rowBar}>
                     <TextInput
-                      style={[styles.inputField, styles.underline]}
+                      style={styles.inputField}
                       placeholder="Minimum"
                       onChangeText={(value) => setFilterAmountMin(value)}
                     />
-                    <Text style={styles.inputTitle}>and</Text>
                     <TextInput
-                      style={[styles.inputField, styles.underline]}
+                      style={styles.inputField}
                       placeholder="Maximun"
                       onChangeText={(value) => setFilterAmountMax(value)}
                     />
                   </View>
                 )}
+                {/* Input field for filter time */}
+                <View style={styles.inputBoxContainer}>
+                  <Text style={styles.inputTitle}>From</Text>
+                  <Button
+                    title={
+                      filterStartTime == null
+                        ? "Filter start time"
+                        : formatDateTime(filterStartTime)
+                    }
+                    onPress={() => setFilterStartVisible(true)}
+                  />
+                  <DateTimePickerModal
+                    isVisible={isFilterStartVisible}
+                    mode="datetime"
+                    onConfirm={handleFilterStart}
+                    onCancel={() => setFilterStartVisible(false)}
+                    display="inline"
+                  />
+                  <Text style={styles.inputTitle}>To</Text>
+                  <Button
+                    title={
+                      filterEndTime == null
+                        ? "Filter end time"
+                        : formatDateTime(filterEndTime)
+                    }
+                    onPress={() => setFilterEndVisible(true)}
+                  />
+                  <DateTimePickerModal
+                    isVisible={isFilterEndVisible}
+                    mode="datetime"
+                    onConfirm={handleFilterEnd}
+                    onCancel={() => setFilterEndVisible(false)}
+                    display="inline"
+                  />
+                </View>
+                {/* Input field for filter category */}
+                <View style={styles.inputBoxContainer}>
+                  <Text style={styles.inputTitle}>Filter type</Text>
+                  <SelectList
+                    data={allTypes}
+                    save="value"
+                    setSelected={(value) => setFilterCategory(value)}
+                    placeholder="All"
+                    search={true}
+                    maxHeight={windowHeight * 0.2}
+                    inputStyles={styles.inputField}
+                    dropdownTextStyles={styles.inputTitle}
+                  />
+                </View>
+                {/* Input field for filter name */}
+                <View style={styles.inputBoxContainer}>
+                  <Text style={styles.inputTitle}>Filter name</Text>
+                  <TextInput
+                    ref={filterNameRef}
+                    style={styles.inputField}
+                    placeholder="Filter containing name"
+                    onChangeText={(value) => setFilterName(value)}
+                  />
+                </View>
+                {/* Reset button */}
+                <Button title="Reset" onPress={resetFilter} />
               </View>
             )}
             {/* Renders the display transactions */}
@@ -362,7 +498,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "80%",
-    marginBottom: 10,
+    alignItems: "center",
+    margin: 5,
   },
   totalBalanceContainer: {
     alignSelf: "center",
