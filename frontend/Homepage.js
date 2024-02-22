@@ -9,12 +9,21 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
-import { getData, deleteRecord, formatShortDateTime, fontSize, windowHeight } from "./util";
+import {
+  getData,
+  deleteRecord,
+  formatShortDateTime,
+  fontSize,
+  windowHeight,
+} from "./util";
 
 const HomeScreen = ({ navigation }) => {
   // Reactive states
   const [totalBalance, setTotalBalance] = useState(0);
   const [transactions, setTransactions] = useState(null);
+  const [sortType, setSortType] = useState("Recent"); // ["Recent", "Amount", "Category"]
+  const [sortOrder, setSortOrder] = useState("Ascending"); // ["Ascending", "Descending"]
+  const [recordNumber, setRecordNumber] = useState(5);
 
   const updateTotalBalance = (transactions) => {
     let total = 0;
@@ -54,8 +63,54 @@ const HomeScreen = ({ navigation }) => {
 
     Alert.alert(
       "Delete Transaction",
-      `Are you sure you want to delete the transaction: ${transaction.name}?`, buttons
+      `Are you sure you want to delete the transaction: ${transaction.name}?`,
+      buttons,
     );
+  };
+
+  const nextSortType = (sortType) => {
+    if (sortType === "Recent") {
+      setSortType("Amount");
+    } else if (sortType === "Amount") {
+      setSortType("Category");
+    } else if (sortType === "Category") {
+      setSortType("Recent");
+    }
+  };
+
+  const nextRecordNumber = (recordNumber) => {
+    if (recordNumber === 5) {
+      setRecordNumber(10);
+    } else if (recordNumber === 10) {
+      setRecordNumber(20);
+    } else if (recordNumber === 20) {
+      setRecordNumber(50);
+    } else if (recordNumber === 50) {
+      setRecordNumber(5);
+    }
+  };
+
+  const sortTransactions = (transactions, sortType, sortOrder) => {
+    if (sortType === "Recent") {
+      sortedData = [...transactions].sort((a, b) => {
+        return sortOrder === "Ascending"
+          ? new Date(a.time) - new Date(b.time)
+          : new Date(b.time) - new Date(a.time);
+      });
+    } else if (sortType === "Amount") {
+      sortedData = [...transactions].sort((a, b) => {
+        return sortOrder === "Ascending"
+          ? a.amount - b.amount
+          : b.amount - a.amount;
+      });
+    } else if (sortType === "Category") {
+      sortedData = [...transactions].sort((a, b) => {
+        return sortOrder === "Ascending"
+          ? a.category.localeCompare(b.category)
+          : b.category.localeCompare(a.category);
+      });
+    }
+    setTransactions(sortedData);
   };
 
   // Get records from database on page load
@@ -69,10 +124,18 @@ const HomeScreen = ({ navigation }) => {
     if (transactions != null) updateTotalBalance(transactions);
   }, [transactions]);
 
+  useEffect(() => {
+    if (transactions != null)
+      sortTransactions(transactions, sortType, sortOrder);
+    console.log(transactions);
+  }, [sortType, sortOrder]);
+
   return (
     <ScrollView
       contentContainerStyle={styles.scrollContainer}
-      onScroll={() => getData(setTransactions)}
+      onScroll={() => {
+        getData(setTransactions);
+      }}
       scrollEventThrottle={500}
     >
       <View style={styles.contentArea}>
@@ -91,10 +154,35 @@ const HomeScreen = ({ navigation }) => {
                 Total Balance: ${totalBalance.toFixed(1)}
               </Text>
             </View>
+            {/* Renders the toolbar */}
+            <View style={styles.toolbarArea}>
+              <Button
+                title={sortType}
+                onPress={() => {
+                  nextSortType(sortType);
+                }}
+              />
+              <Button
+                title={sortOrder}
+                onPress={() => {
+                  sortOrder === "Ascending"
+                    ? setSortOrder("Descending")
+                    : setSortOrder("Ascending");
+                }}
+              />
+              <Button
+                title={recordNumber.toString()}
+                onPress={() => {
+                  nextRecordNumber(recordNumber);
+                }}
+              />
+            </View>
             {/* Renders the most recent 5 transactions */}
             <Text style={styles.recentTransactions}>Recent Transactions</Text>
-            {transactions.slice(-5).map((transaction, index) => (
-              <TouchableOpacity key={index} style={styles.transactionContainer}
+            {transactions.slice(-recordNumber).map((transaction, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.transactionContainer}
                 // Delete transaction on long press
                 onLongPress={() => {
                   handleDeleteTransaction(transaction);
@@ -114,6 +202,13 @@ const HomeScreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
             ))}
+            {/* Test button for sorting */}
+            <Button
+              title="Sort"
+              onPress={() => {
+                sortTransactions(transactions, sortType, sortOrder);
+              }}
+            />
             {/* <Button */}
             {/*   title="Go to Bubujai Detail Page" */}
             {/*   onPress={() => */}
@@ -145,6 +240,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingVertical: 30,
+  },
+  toolbarArea: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "80%",
   },
   totalBalanceContainer: {
     alignSelf: "center",
