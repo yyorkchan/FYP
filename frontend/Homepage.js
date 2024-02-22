@@ -6,16 +6,22 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
   TouchableOpacity,
 } from "react-native";
+import { SelectList } from "react-native-dropdown-select-list";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   getData,
   deleteRecord,
   formatShortDateTime,
   fontSize,
   windowHeight,
+  windowWidth,
 } from "./util";
+
+const componentWidth = windowWidth * 0.8;
 
 const HomeScreen = ({ navigation }) => {
   // Reactive states
@@ -27,6 +33,50 @@ const HomeScreen = ({ navigation }) => {
   const [sortType, setSortType] = useState("Recent"); // ["Recent", "Amount", "Category"]
   const [sortOrder, setSortOrder] = useState("Ascending"); // ["Ascending", "Descending"]
   const [recordNumber, setRecordNumber] = useState(5);
+
+  // States for filtering
+  const [filterOn, setFilterOn] = useState(false);
+  const [filterAmountType, setFilterAmountType] = useState("=");
+  const [filterAmountValue, setFilterAmountValue] = useState(null);
+  const [filterAmountMin, setFilterAmountMin] = useState(null);
+  const [filterAmountMax, setFilterAmountMax] = useState(null);
+
+  const filterAmountTypes = [
+    { key: "1", value: "=" },
+    { key: "2", value: "<" },
+    { key: "3", value: ">" },
+    { key: "4", value: "between" },
+  ];
+
+  const filterTransactionAmount = (
+    transactions,
+    filterAmountType,
+    filterAmountValue,
+    filterAmountMin,
+    filterAmountMax,
+  ) => {
+    if (filterAmountType == null || filterAmountValue == null)
+      return transactions;
+    else if (filterAmountType === "=") {
+      return transactions.filter(
+        (transaction) => transaction.amount == filterAmountValue,
+      );
+    } else if (filterAmountType === "<") {
+      return transactions.filter(
+        (transaction) => transaction.amount < filterAmountValue,
+      );
+    } else if (filterAmountType === ">") {
+      return transactions.filter(
+        (transaction) => transaction.amount > filterAmountValue,
+      );
+    } else if (filterAmountType === "between") {
+      return transactions.filter(
+        (transaction) =>
+          transaction.amount >= filterAmountMin &&
+          transaction.amount <= filterAmountMax,
+      );
+    }
+  };
 
   const updateTotalBalance = (transactions) => {
     let total = 0;
@@ -116,6 +166,13 @@ const HomeScreen = ({ navigation }) => {
     return sortedData;
   };
 
+  const resetFilter = () => {
+    setFilterAmountType("=");
+    setFilterAmountValue(null);
+    setFilterAmountMin(null);
+    setFilterAmountMax(null);
+  };
+
   // Get records from database on page load
   useEffect(() => {
     getData(setTransactions);
@@ -126,10 +183,27 @@ const HomeScreen = ({ navigation }) => {
   // Or sortType/sortOrder/recordNumber are changed
   useEffect(() => {
     if (transactions != null) {
-      sortedData = sortTransactions(transactions, sortType, sortOrder);
+      filteredData = filterTransactionAmount(
+        transactions,
+        filterAmountType,
+        filterAmountValue,
+        filterAmountMin,
+        filterAmountMax,
+      );
+      sortedData = sortTransactions(filteredData, sortType, sortOrder);
       setDisplayTransactions(sortedData.slice(0, recordNumber));
     }
-  }, [transactions, sortType, sortOrder, recordNumber]);
+  }, [
+    transactions,
+    sortType,
+    sortOrder,
+    recordNumber,
+    filterOn,
+    filterAmountType,
+    filterAmountValue,
+    filterAmountMin,
+    filterAmountMax,
+  ]);
 
   // Update total balance when transactions are updated
   useEffect(() => {
@@ -161,19 +235,11 @@ const HomeScreen = ({ navigation }) => {
               </Text>
             </View>
             {/* Renders the toolbar */}
-            <View style={styles.toolbarArea}>
+            <View style={styles.rowBar}>
               <Button
                 title={sortType}
                 onPress={() => {
                   nextSortType(sortType);
-                }}
-              />
-              <Button
-                title={sortOrder}
-                onPress={() => {
-                  sortOrder === "Ascending"
-                    ? setSortOrder("Descending")
-                    : setSortOrder("Ascending");
                 }}
               />
               <Button
@@ -183,6 +249,68 @@ const HomeScreen = ({ navigation }) => {
                 }}
               />
             </View>
+            <View style={styles.rowBar}>
+              <Button
+                title={sortOrder}
+                onPress={() => {
+                  sortOrder === "Ascending"
+                    ? setSortOrder("Descending")
+                    : setSortOrder("Ascending");
+                }}
+              />
+              {/* Toggle for filtering */}
+              <TouchableOpacity
+                onPress={() => {
+                  setFilterOn(!filterOn);
+                  resetFilter();
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="filter"
+                  size={fontSize * 2}
+                  color="blue"
+                />
+              </TouchableOpacity>
+            </View>
+            {/* Input field for filter amount */}
+            {filterOn && (
+              <View style={styles.inputBoxContainer}>
+                <View style={styles.rowBar}>
+                  <SelectList
+                    data={filterAmountTypes}
+                    save="value"
+                    setSelected={(value) => setFilterAmountType(value)}
+                    placeholder="="
+                    search={false}
+                    maxHeight={windowHeight * 0.2}
+                    inputStyles={styles.inputField}
+                    dropdownTextStyles={styles.inputTitle}
+                  />
+                  {filterAmountType !== "between" && (
+                    <TextInput
+                      style={[styles.inputField, styles.underline]}
+                      placeholder="Value"
+                      onChangeText={(value) => setFilterAmountValue(value)}
+                    />
+                  )}
+                </View>
+                {filterAmountType === "between" && (
+                  <View style={styles.rowBar}>
+                    <TextInput
+                      style={[styles.inputField, styles.underline]}
+                      placeholder="Minimum"
+                      onChangeText={(value) => setFilterAmountMin(value)}
+                    />
+                    <Text style={styles.inputTitle}>and</Text>
+                    <TextInput
+                      style={[styles.inputField, styles.underline]}
+                      placeholder="Maximun"
+                      onChangeText={(value) => setFilterAmountMax(value)}
+                    />
+                  </View>
+                )}
+              </View>
+            )}
             {/* Renders the display transactions */}
             <Text style={styles.recentTransactions}>Transactions</Text>
             {displayTransactions.map((transaction, index) => (
@@ -230,10 +358,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 30,
   },
-  toolbarArea: {
+  rowBar: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "80%",
+    marginBottom: 10,
   },
   totalBalanceContainer: {
     alignSelf: "center",
@@ -298,6 +427,23 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 10,
     right: 10,
+  },
+  inputBoxContainer: {
+    width: componentWidth,
+    marginVertical: windowHeight * 0.01,
+  },
+  underline: {
+    borderBottomWidth: 1,
+  },
+  inputTitle: {
+    fontSize: fontSize,
+    color: "black",
+    marginVertical: 5,
+  },
+  inputField: {
+    fontSize: fontSize * 1.2,
+    color: "black",
+    fontWeight: "bold",
   },
 });
 
