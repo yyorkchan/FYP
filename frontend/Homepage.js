@@ -194,8 +194,8 @@ const HomeScreen = ({ navigation }) => {
     } else if (recordNumber === 10) {
       setRecordNumber(20);
     } else if (recordNumber === 20) {
-      setRecordNumber(50);
-    } else if (recordNumber === 50) {
+      setRecordNumber("all");
+    } else if (recordNumber === "all") {
       setRecordNumber(5);
     }
   };
@@ -261,7 +261,11 @@ const HomeScreen = ({ navigation }) => {
       filteredData = filterTransactionCategory(filteredData, filterCategory);
       filteredData = filterTransactionName(filteredData, filterName);
       sortedData = sortTransactions(filteredData, sortType, sortOrder);
-      setDisplayTransactions(sortedData.slice(0, recordNumber));
+      if (recordNumber == "all") {
+        setDisplayTransactions(sortedData);
+      } else {
+        setDisplayTransactions(sortedData.slice(0, recordNumber));
+      }
     }
   }, [
     transactions,
