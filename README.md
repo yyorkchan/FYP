@@ -15,9 +15,7 @@ This is Our FYP. ｡ﾟヽ(ﾟ ´Д`)ﾉﾟ｡
 
 Next up (๑•̀ㅂ•́)و✧ 🔥
 
-- Implement Sort & Filter in Home Screen
-- Only Allow Non-empty value & Loading(?) in Add Screen
-- Research what machine learning model to use
+- Research what machine learning model to use (York)
 
 Done! ✧◝(⁰▿⁰)◜✧ ✅
 
@@ -31,6 +29,8 @@ Done! ✧◝(⁰▿⁰)◜✧ ✅
 8. Start working on interim report: Done!
 9. Add support for recurring records
 10. Added Delete records function: Legendarily Done! ٩(｡・ω・｡)و
+11. Implement Sort & Filter in Home Screen
+12. Only Allow Non-empty value in Add Screen
 
 ## General Structure
 
@@ -38,9 +38,12 @@ Done! ✧◝(⁰▿⁰)◜✧ ✅
 
 - App.js is the main Javascript file that contains all the Pages to be navigate
 - All 3 frontend pages should be contained in the folder "/frontend"
-- All css should be included at the end of the corresponding frontend js, Read Homepage.js for the detailed formatting
+- All unique css should be included at the end of the corresponding frontend js, Read Homepage.js for the detailed formatting
+- All common css should be included in "style.js", including fontSize, windowSizes etc.
+- Functions for filtering and sorting are located in "filterSort.js"
+- Helper functions are located in "util.js"
 
 ### Backend
 
-- index.js is the main Javascript file for express server which hosts records fetched back from retool
-- retool.js runs sql queries on retool and get back records
+- index.js is the main Javascript file for express server which hosts fetch, add and delete endpoint via retool
+- retool.js runs sql queries on retool, retrieving, adding and deleting records
