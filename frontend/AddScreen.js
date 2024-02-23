@@ -12,13 +12,8 @@ import {
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { SelectList } from "react-native-dropdown-select-list";
 import SwitchToggle from "react-native-switch-toggle";
-import {
-  createRecord,
-  fontSize,
-  formatDateTime,
-  windowHeight,
-  windowWidth,
-} from "./util";
+import { createRecord, formatDateTime } from "./util";
+import { commonStyles, windowHeight, windowWidth } from "./style";
 
 // Declare UI size constants
 const componentWidth = windowWidth * 0.8;
@@ -138,8 +133,8 @@ const AddScreen = ({ navigation }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.contentArea}>
+    <ScrollView contentContainerStyle={commonStyles.scrollContainer}>
+      <View style={commonStyles.contentArea}>
         {/* Switch for choosing income or expense */}
         <SwitchToggle
           switchOn={isIncome}
@@ -154,29 +149,29 @@ const AddScreen = ({ navigation }) => {
           buttonText={isIncome ? "Income" : "Expense"}
         />
         {/* Input field for name */}
-        <View style={[styles.inputBoxContainer, styles.underline]}>
-          <Text style={styles.inputTitle}>Name</Text>
+        <View style={[commonStyles.inputBoxContainer, styles.underline]}>
+          <Text style={commonStyles.inputTitle}>Name</Text>
           <TextInput
             ref={nameRef}
-            style={styles.inputField}
+            style={commonStyles.inputField}
             placeholder="Press to enter name"
             onChangeText={(name) => setName(name)}
           />
         </View>
         {/* Input field for amount */}
-        <View style={[styles.inputBoxContainer, styles.underline]}>
-          <Text style={styles.inputTitle}>Amount</Text>
+        <View style={[commonStyles.inputBoxContainer, styles.underline]}>
+          <Text style={commonStyles.inputTitle}>Amount</Text>
           <TextInput
             ref={amountRef}
-            style={styles.inputField}
+            style={commonStyles.inputField}
             keyboardType="numeric"
             placeholder="Press to enter amount"
             onChangeText={(amount) => setAmount(amount)}
           />
         </View>
         {/* Input field for date and time */}
-        <View style={styles.inputBoxContainer}>
-          <Text style={styles.inputTitle}>Time & Date</Text>
+        <View style={commonStyles.inputBoxContainer}>
+          <Text style={commonStyles.inputTitle}>Time & Date</Text>
           <Button
             title={
               time == null
@@ -194,8 +189,8 @@ const AddScreen = ({ navigation }) => {
           />
         </View>
         {/* Input field for transaction type */}
-        <View style={styles.inputBoxContainer}>
-          <Text style={styles.inputTitle}>Type</Text>
+        <View style={commonStyles.inputBoxContainer}>
+          <Text style={commonStyles.inputTitle}>Type</Text>
           <SelectList
             data={allTypes}
             save="value"
@@ -203,13 +198,13 @@ const AddScreen = ({ navigation }) => {
             placeholder="Press to select type"
             search={true}
             maxHeight={windowHeight * 0.2}
-            inputStyles={styles.inputField}
-            dropdownTextStyles={styles.inputTitle}
+            inputStyles={commonStyles.inputField}
+            dropdownTextStyles={commonStyles.inputTitle}
           />
         </View>
         {/* Input field for recurring transaction */}
-        <View style={[styles.inputBoxContainer, styles.row]}>
-          <Text style={styles.inputTitle}>Recurring Record</Text>
+        <View style={[commonStyles.inputBoxContainer, commonStyles.rowBar]}>
+          <Text style={commonStyles.inputTitle}>Recurring Record</Text>
           <Switch
             onValueChange={() => {
               setIsRecurring(!isRecurring);
@@ -220,8 +215,8 @@ const AddScreen = ({ navigation }) => {
         </View>
         {/* Input field for recurring type */}
         {isRecurring && (
-          <View style={styles.inputBoxContainer}>
-            <Text style={styles.inputTitle}>Recurring Frequency</Text>
+          <View style={commonStyles.inputBoxContainer}>
+            <Text style={commonStyles.inputTitle}>Recurring Frequency</Text>
             <SelectList
               data={recurringFreqs}
               save="value"
@@ -229,15 +224,15 @@ const AddScreen = ({ navigation }) => {
               placeholder="Press to select frequency"
               search={false}
               maxHeight={windowHeight * 0.2}
-              inputStyles={styles.inputField}
-              dropdownTextStyles={styles.inputTitle}
+              inputStyles={commonStyles.inputField}
+              dropdownTextStyles={commonStyles.inputTitle}
             />
           </View>
         )}
         {/* Input field for recurring end time */}
         {isRecurring && (
-          <View style={styles.inputBoxContainer}>
-            <Text style={styles.inputTitle}>Recurring End Time</Text>
+          <View style={commonStyles.inputBoxContainer}>
+            <Text style={commonStyles.inputTitle}>Recurring End Time</Text>
             <Button
               title={
                 recurringEndTime == null
@@ -274,20 +269,20 @@ const AddScreen = ({ navigation }) => {
           />
         </View>
         {/* Debug */}
-        {/* <View style={styles.inputBoxContainer}> */}
-        {/*   <Text style={styles.inputTitle}>Debug</Text> */}
-        {/*   <Text style={styles.inputTitle}> */}
+        {/* <View style={commonStyles.inputBoxContainer}> */}
+        {/*   <Text style={commonStyles.inputTitle}>Debug</Text> */}
+        {/*   <Text style={commonStyles.inputTitle}> */}
         {/*     It is {isIncome ? "Income" : "Expense"} */}
         {/*   </Text> */}
-        {/*   <Text style={styles.inputTitle}>name = {name}</Text> */}
-        {/*   <Text style={styles.inputTitle}> */}
+        {/*   <Text style={commonStyles.inputTitle}>name = {name}</Text> */}
+        {/*   <Text style={commonStyles.inputTitle}> */}
         {/*     amount = {amount * (2 * isIncome - 1)} */}
         {/*   </Text> */}
-        {/*   <Text style={styles.inputTitle}> */}
+        {/*   <Text style={commonStyles.inputTitle}> */}
         {/*     date time = {formatDateTime(time)} */}
         {/*   </Text> */}
-        {/*   <Text style={styles.inputTitle}>type = {category}</Text> */}
-        {/* <Text style={styles.inputTitle}>Recurring Frequency = {recurringFreq}</Text> */}
+        {/*   <Text style={commonStyles.inputTitle}>type = {category}</Text> */}
+        {/* <Text style={commonStyles.inputTitle}>Recurring Frequency = {recurringFreq}</Text> */}
         {/* </View> */}
       </View>
     </ScrollView>
@@ -295,11 +290,6 @@ const AddScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  contentArea: {
-    flex: 1,
-    alignItems: "center",
-    paddingVertical: 30,
-  },
   toggleContainer: {
     width: toggleWidth,
     height: toggleHeight,
@@ -317,29 +307,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
   },
-  inputBoxContainer: {
-    width: componentWidth,
-    marginVertical: windowHeight * 0.01,
-  },
   underline: {
     borderBottomWidth: 1,
-  },
-  inputTitle: {
-    fontSize: fontSize,
-    color: "black",
-    marginVertical: 5,
-  },
-  inputField: {
-    fontSize: fontSize * 1.2,
-    color: "black",
-    fontWeight: "bold",
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  scrollContainer: {
-    flexGrow: 1,
   },
 });
 

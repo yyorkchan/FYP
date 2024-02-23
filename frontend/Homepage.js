@@ -17,14 +17,10 @@ import { allTypes } from "./AddScreen";
 import {
   getData,
   deleteRecord,
-  fontSize,
   formatDateTime,
   formatShortDateTime,
-  windowHeight,
-  windowWidth,
 } from "./util";
-
-const componentWidth = windowWidth * 0.8;
+import { commonStyles, windowHeight, fontSize } from "./style";
 
 const HomeScreen = ({ navigation }) => {
   // Reactive states
@@ -290,13 +286,13 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <ScrollView
-      contentContainerStyle={styles.scrollContainer}
+      contentContainerStyle={commonStyles.scrollContainer}
       onScroll={() => {
         getData(setTransactions);
       }}
       scrollEventThrottle={500}
     >
-      <View style={styles.contentArea}>
+      <View style={commonStyles.contentArea}>
         <Text style={styles.title}>FYP Finance App</Text>
         {displayTransactions == null ? (
           <>
@@ -313,8 +309,8 @@ const HomeScreen = ({ navigation }) => {
               </Text>
             </View>
             {/* Renders the toolbar */}
-            <View style={styles.rowBar}>
-              <Text style={styles.inputTitle}>Sort by</Text>
+            <View style={commonStyles.rowBar}>
+              <Text style={commonStyles.inputTitle}>Sort by</Text>
               <Button
                 title={sortType}
                 onPress={() => {
@@ -330,8 +326,8 @@ const HomeScreen = ({ navigation }) => {
                 }}
               />
             </View>
-            <View style={styles.rowBar}>
-              <Text style={styles.inputTitle}>Number of records</Text>
+            <View style={commonStyles.rowBar}>
+              <Text style={commonStyles.inputTitle}>Number of records</Text>
               <Button
                 title={recordNumber.toString()}
                 onPress={() => {
@@ -353,8 +349,8 @@ const HomeScreen = ({ navigation }) => {
             </View>
             {/* Input field for filter amount */}
             {filterOn && (
-              <View style={styles.inputBoxContainer}>
-                <View style={styles.rowBar}>
+              <View style={commonStyles.inputBoxContainer}>
+                <View style={commonStyles.rowBar}>
                   <SelectList
                     data={filterAmountTypes}
                     save="value"
@@ -362,35 +358,35 @@ const HomeScreen = ({ navigation }) => {
                     placeholder="="
                     search={false}
                     maxHeight={windowHeight * 0.2}
-                    inputStyles={styles.inputField}
-                    dropdownTextStyles={styles.inputTitle}
+                    inputStyles={commonStyles.inputField}
+                    dropdownTextStyles={commonStyles.inputTitle}
                   />
                   {filterAmountType !== "between" && (
                     <TextInput
                       ref={filterValueRef}
-                      style={styles.inputField}
+                      style={commonStyles.inputField}
                       placeholder="Amount value"
                       onChangeText={(value) => setFilterAmountValue(value)}
                     />
                   )}
                 </View>
                 {filterAmountType === "between" && (
-                  <View style={styles.rowBar}>
+                  <View style={commonStyles.rowBar}>
                     <TextInput
-                      style={styles.inputField}
+                      style={commonStyles.inputField}
                       placeholder="Minimum"
                       onChangeText={(value) => setFilterAmountMin(value)}
                     />
                     <TextInput
-                      style={styles.inputField}
+                      style={commonStyles.inputField}
                       placeholder="Maximun"
                       onChangeText={(value) => setFilterAmountMax(value)}
                     />
                   </View>
                 )}
                 {/* Input field for filter time */}
-                <View style={styles.inputBoxContainer}>
-                  <Text style={styles.inputTitle}>From</Text>
+                <View style={commonStyles.inputBoxContainer}>
+                  <Text style={commonStyles.inputTitle}>From</Text>
                   <Button
                     title={
                       filterStartTime == null
@@ -406,7 +402,7 @@ const HomeScreen = ({ navigation }) => {
                     onCancel={() => setFilterStartVisible(false)}
                     display="inline"
                   />
-                  <Text style={styles.inputTitle}>To</Text>
+                  <Text style={commonStyles.inputTitle}>To</Text>
                   <Button
                     title={
                       filterEndTime == null
@@ -424,8 +420,8 @@ const HomeScreen = ({ navigation }) => {
                   />
                 </View>
                 {/* Input field for filter category */}
-                <View style={styles.inputBoxContainer}>
-                  <Text style={styles.inputTitle}>Filter type</Text>
+                <View style={commonStyles.inputBoxContainer}>
+                  <Text style={commonStyles.inputTitle}>Filter type</Text>
                   <SelectList
                     data={allTypes}
                     save="value"
@@ -433,16 +429,16 @@ const HomeScreen = ({ navigation }) => {
                     placeholder="All"
                     search={true}
                     maxHeight={windowHeight * 0.2}
-                    inputStyles={styles.inputField}
-                    dropdownTextStyles={styles.inputTitle}
+                    inputStyles={commonStyles.inputField}
+                    dropdownTextStyles={commonStyles.inputTitle}
                   />
                 </View>
                 {/* Input field for filter name */}
-                <View style={styles.inputBoxContainer}>
-                  <Text style={styles.inputTitle}>Filter name</Text>
+                <View style={commonStyles.inputBoxContainer}>
+                  <Text style={commonStyles.inputTitle}>Filter name</Text>
                   <TextInput
                     ref={filterNameRef}
-                    style={styles.inputField}
+                    style={commonStyles.inputField}
                     placeholder="Filter containing name"
                     onChangeText={(value) => setFilterName(value)}
                   />
@@ -484,26 +480,11 @@ const HomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1,
-  },
   title: {
     fontSize: fontSize * 1.7,
     fontWeight: "bold",
     marginBottom: 20,
     color: "#1AA7EC",
-  },
-  contentArea: {
-    flex: 1,
-    alignItems: "center",
-    paddingVertical: 30,
-  },
-  rowBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "80%",
-    alignItems: "center",
-    margin: 5,
   },
   totalBalanceContainer: {
     alignSelf: "center",
@@ -568,23 +549,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 10,
     right: 10,
-  },
-  inputBoxContainer: {
-    width: componentWidth,
-    marginVertical: windowHeight * 0.01,
-  },
-  underline: {
-    borderBottomWidth: 1,
-  },
-  inputTitle: {
-    fontSize: fontSize,
-    color: "black",
-    marginVertical: 5,
-  },
-  inputField: {
-    fontSize: fontSize * 1.2,
-    color: "black",
-    fontWeight: "bold",
   },
 });
 

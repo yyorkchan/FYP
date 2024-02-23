@@ -1,5 +1,5 @@
 import moment from "moment";
-import { Alert, Dimensions } from "react-native";
+import { Alert } from "react-native";
 
 // IP address of the server
 // Baseball
@@ -9,12 +9,6 @@ export const IP = "192.168.1.141";
 // export const IP = '192.168.0.169'
 
 export const PORT = 3000;
-
-// Declare UI size constants
-export const windowWidth = Dimensions.get("window").width;
-export const windowHeight = Dimensions.get("window").height;
-
-export const fontSize = Math.min(windowWidth, windowHeight) * 0.045;
 
 const getRecurringRecords = (records) => {
   return records.filter((record) => record.is_recurring);
@@ -136,13 +130,12 @@ export const deleteRecord = (body, setData) => {
       console.log(data);
       // Call getData to update the records and stop loading
       getData(setData);
-
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
       getData(setData);
     });
-}
+};
 
 // Converts a JS date object to short Hong Kong date and time
 export const formatShortDateTime = (time) => {
