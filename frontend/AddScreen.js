@@ -17,9 +17,8 @@ import { createRecord, formatDateTime } from "./util";
 import { commonStyles, windowHeight, windowWidth } from "./style";
 
 // Declare UI size constants
-const componentWidth = windowWidth * 0.8;
-const toggleWidth = componentWidth;
-const toggleHeight = Math.max(windowHeight * 0.04, 40);
+const toggleWidth = Math.min(windowWidth, windowHeight) * 0.8;
+const toggleHeight = toggleWidth * 0.1;
 
 export const allTypes = [
   { key: "1", value: "Bills" },
@@ -163,7 +162,9 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
               buttonText={isIncome ? "Income" : "Expense"}
             />
             {/* Input field for name */}
-            <View style={[commonStyles.inputBoxContainer, styles.underline]}>
+            <View
+              style={[commonStyles.inputBoxContainer, commonStyles.underline]}
+            >
               <Text style={commonStyles.inputTitle}>Name</Text>
               <TextInput
                 ref={nameRef}
@@ -173,7 +174,9 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
               />
             </View>
             {/* Input field for amount */}
-            <View style={[commonStyles.inputBoxContainer, styles.underline]}>
+            <View
+              style={[commonStyles.inputBoxContainer, commonStyles.underline]}
+            >
               <Text style={commonStyles.inputTitle}>Amount</Text>
               <TextInput
                 ref={amountRef}
@@ -306,9 +309,6 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     fontWeight: "bold",
-  },
-  underline: {
-    borderBottomWidth: 1,
   },
 });
 

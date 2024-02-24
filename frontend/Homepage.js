@@ -27,7 +27,7 @@ import {
   filterTransactionName,
   sortTransactions,
 } from "./filterSort";
-import { commonStyles, windowHeight, fontSize } from "./style";
+import { commonStyles, windowHeight, fontSize, lightBlue } from "./style";
 
 const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
   // Reactive states
@@ -225,7 +225,7 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
         {transactions == null || displayTransactions == null ? (
           <>
             {/* Renders the loading screen */}
-            <ActivityIndicator size="large" color="#add8e6" />
+            <ActivityIndicator size="large" color={lightBlue} />
             <Text style={commonStyles.title}>Loading...</Text>
           </>
         ) : (
@@ -236,32 +236,50 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
                 Total Balance: ${totalBalance.toFixed(1)}
               </Text>
             </View>
-            {/* Renders the toolbar */}
+            {/* Renders the 1st line of toolbar */}
             <View style={commonStyles.rowBar}>
               <Text style={commonStyles.inputTitle}>Sort by</Text>
-              <Button
-                title={sortType}
+              <TouchableOpacity
                 onPress={() => {
                   nextSortType(sortType);
                 }}
-              />
-              <Button
-                title={sortOrder}
+              >
+                <Text style={commonStyles.button}>{sortType}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
                 onPress={() => {
                   sortOrder === "Ascending"
                     ? setSortOrder("Descending")
                     : setSortOrder("Ascending");
                 }}
-              />
+              >
+                {sortOrder === "Ascending" ? (
+                  <MaterialCommunityIcons
+                    name="arrow-up"
+                    size={fontSize * 2}
+                    color={lightBlue}
+                  />
+                ) : (
+                  <MaterialCommunityIcons
+                    name="arrow-down"
+                    size={fontSize * 2}
+                    color={lightBlue}
+                  />
+                )}
+              </TouchableOpacity>
             </View>
+            {/* Render the 2nd line of toolbar*/}
             <View style={commonStyles.rowBar}>
               <Text style={commonStyles.inputTitle}>Number of records</Text>
-              <Button
-                title={recordNumber.toString()}
+              <TouchableOpacity
                 onPress={() => {
                   nextRecordNumber(recordNumber);
                 }}
-              />
+              >
+                <Text style={commonStyles.button}>
+                  {recordNumber.toString()}
+                </Text>
+              </TouchableOpacity>
               {/* Toggle for filtering */}
               <TouchableOpacity
                 onPress={() => {
@@ -271,13 +289,13 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
                 <MaterialCommunityIcons
                   name="filter"
                   size={fontSize * 2}
-                  color="blue"
+                  color={lightBlue}
                 />
               </TouchableOpacity>
             </View>
             {/* Input field for filter amount */}
             {filterOn && (
-              <View style={commonStyles.inputBoxContainer}>
+              <>
                 <View style={commonStyles.rowBar}>
                   <SelectList
                     data={filterAmountTypes}
@@ -292,7 +310,7 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
                   {filterAmountType !== "between" && (
                     <TextInput
                       ref={filterValueRef}
-                      style={commonStyles.inputField}
+                      style={[commonStyles.inputField, commonStyles.underline]}
                       placeholder="Amount value"
                       onChangeText={(value) => setFilterAmountValue(value)}
                     />
@@ -366,14 +384,14 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
                   <Text style={commonStyles.inputTitle}>Filter name</Text>
                   <TextInput
                     ref={filterNameRef}
-                    style={commonStyles.inputField}
+                    style={[commonStyles.inputField, commonStyles.underline]}
                     placeholder="Filter containing name"
                     onChangeText={(value) => setFilterName(value)}
                   />
                 </View>
                 {/* Reset button */}
                 <Button title="Reset" onPress={resetFilter} />
-              </View>
+              </>
             )}
             {/* Renders the display transactions */}
             <Text style={styles.recentTransactions}>Transactions</Text>
@@ -411,11 +429,11 @@ const styles = StyleSheet.create({
   totalBalanceContainer: {
     alignSelf: "center",
     width: "80%",
-    padding: 10,
+    padding: fontSize * 0.6,
     backgroundColor: "#f2f2f2",
-    borderWidth: 1,
+    borderWidth: fontSize * 0.05,
     borderColor: "#00b4d8",
-    borderRadius: 5,
+    borderRadius: fontSize * 0.5,
   },
   totalBalanceText: {
     fontSize: fontSize * 1.2,
@@ -424,53 +442,53 @@ const styles = StyleSheet.create({
   recentTransactions: {
     fontSize: fontSize * 1.2,
     fontWeight: "bold",
-    marginBottom: 20,
-    marginTop: 20,
+    marginBottom: fontSize,
+    marginTop: fontSize,
   },
   transactionContainer: {
     position: "static",
     alignSelf: "center",
     width: "80%",
-    height: Math.max(windowHeight * 0.1, 75),
-    marginBottom: 10,
-    padding: 10,
+    height: fontSize * 4.5,
+    marginBottom: fontSize * 0.5,
+    padding: fontSize * 0.5,
     backgroundColor: "#f2f2f2",
-    borderWidth: 1,
+    borderWidth: fontSize * 0.05,
     borderColor: "#00b4d8",
-    borderRadius: 5,
+    borderRadius: fontSize * 0.5,
   },
   largeTransactionText: {
     fontSize: fontSize,
-    marginBottom: 5,
+    marginBottom: fontSize * 0.25,
     fontWeight: "bold",
     flexWrap: "wrap",
   },
   smallTransactionText: {
     fontSize: fontSize * 0.9,
-    marginBottom: 5,
+    marginBottom: fontSize * 0.25,
     fontWeight: "bold",
     flexWrap: "wrap",
     color: "#808080",
   },
   topLeft: {
     position: "absolute",
-    top: 10,
-    left: 10,
+    top: fontSize * 0.5,
+    left: fontSize * 0.5,
   },
   topRight: {
     position: "absolute",
-    top: 10,
-    right: 10,
+    top: fontSize * 0.5,
+    right: fontSize * 0.5,
   },
   bottomLeft: {
     position: "absolute",
-    bottom: 10,
-    left: 10,
+    bottom: fontSize * 0.5,
+    left: fontSize * 0.5,
   },
   bottomRight: {
     position: "absolute",
-    bottom: 10,
-    right: 10,
+    bottom: fontSize * 0.5,
+    right: fontSize * 0.5,
   },
 });
 

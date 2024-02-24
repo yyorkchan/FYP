@@ -5,7 +5,7 @@ export const windowWidth = Dimensions.get("window").width;
 export const windowHeight = Dimensions.get("window").height;
 
 export const fontSize = Math.min(windowWidth, windowHeight) * 0.045;
-const componentWidth = windowWidth * 0.8;
+export const lightBlue = "#1AA7EC";
 
 export const commonStyles = StyleSheet.create({
   scrollContainer: {
@@ -14,33 +14,42 @@ export const commonStyles = StyleSheet.create({
   contentArea: {
     flex: 1,
     alignItems: "center",
-    paddingVertical: 30,
+    paddingVertical: fontSize * 2,
   },
   title: {
     fontSize: fontSize * 1.7,
     fontWeight: "bold",
-    marginBottom: 20,
-    color: "#1AA7EC",
+    marginBottom: fontSize,
+    color: lightBlue,
   },
   rowBar: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "80%",
     alignItems: "center",
-    margin: 5,
+    margin: fontSize * 0.1,
   },
   inputBoxContainer: {
-    width: componentWidth,
+    width: "80%",
     marginVertical: windowHeight * 0.01,
   },
   inputTitle: {
     fontSize: fontSize,
     color: "black",
-    marginVertical: 5,
+    fontWeight: "bold",
+    marginVertical: fontSize * 0.5,
   },
   inputField: {
     fontSize: fontSize * 1.2,
     color: "black",
     fontWeight: "bold",
+  },
+  button: {
+    fontSize: fontSize,
+    fontWeight: "bold",
+    color: lightBlue,
+  },
+  underline: {
+    borderBottomWidth: fontSize * 0.05,
   },
 });
