@@ -404,18 +404,22 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
                   handleDeleteTransaction(transaction);
                 }}
               >
-                <Text style={[styles.largeTransactionText, styles.topLeft]}>
-                  {transaction.name}
-                </Text>
-                <Text style={[styles.largeTransactionText, styles.topRight]}>
-                  ${transaction.amount}
-                </Text>
-                <Text style={[styles.smallTransactionText, styles.bottomLeft]}>
-                  {transaction.category}
-                </Text>
-                <Text style={[styles.smallTransactionText, styles.bottomRight]}>
-                  {formatShortDateTime(transaction.time)}
-                </Text>
+                <View style={styles.topTransactionBar}>
+                  <Text style={styles.largeTransactionText}>
+                    {transaction.name}
+                  </Text>
+                  <Text style={styles.largeTransactionText}>
+                    ${transaction.amount}
+                  </Text>
+                </View>
+                <View style={styles.bottomTransactionBar}>
+                  <Text style={styles.smallTransactionText}>
+                    {transaction.category}
+                  </Text>
+                  <Text style={styles.smallTransactionText}>
+                    {formatShortDateTime(transaction.time)}
+                  </Text>
+                </View>
               </TouchableOpacity>
             ))}
           </>
@@ -446,10 +450,7 @@ const styles = StyleSheet.create({
     marginTop: fontSize,
   },
   transactionContainer: {
-    position: "static",
-    alignSelf: "center",
     width: "80%",
-    height: fontSize * 4.5,
     marginBottom: fontSize * 0.5,
     padding: fontSize * 0.5,
     backgroundColor: "#f2f2f2",
@@ -457,38 +458,31 @@ const styles = StyleSheet.create({
     borderColor: "#00b4d8",
     borderRadius: fontSize * 0.5,
   },
+  topTransactionBar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    alignItems: "center",
+    marginBottom: fontSize * 0.25,
+  },
+  bottomTransactionBar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    alignItems: "center",
+    marginTop: fontSize * 0.25,
+  },
   largeTransactionText: {
     fontSize: fontSize,
-    marginBottom: fontSize * 0.25,
     fontWeight: "bold",
     flexWrap: "wrap",
+    maxWidth: "80%",
   },
   smallTransactionText: {
     fontSize: fontSize * 0.9,
-    marginBottom: fontSize * 0.25,
     fontWeight: "bold",
     flexWrap: "wrap",
     color: "#808080",
-  },
-  topLeft: {
-    position: "absolute",
-    top: fontSize * 0.5,
-    left: fontSize * 0.5,
-  },
-  topRight: {
-    position: "absolute",
-    top: fontSize * 0.5,
-    right: fontSize * 0.5,
-  },
-  bottomLeft: {
-    position: "absolute",
-    bottom: fontSize * 0.5,
-    left: fontSize * 0.5,
-  },
-  bottomRight: {
-    position: "absolute",
-    bottom: fontSize * 0.5,
-    right: fontSize * 0.5,
   },
 });
 
