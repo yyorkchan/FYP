@@ -84,9 +84,11 @@ export const createRecord = (
   recurringFreq,
   recurringEndTime,
   setRecordAdded,
+  setIsProcessing,
 ) => {
   // If isIncome is true, the amount is the same
   // If isIncome is false, the amount is negative the amount
+  setIsProcessing(true);
   const reqObj = {
     name,
     category,
@@ -109,6 +111,7 @@ export const createRecord = (
     .then((data) => {
       Alert.alert("Record created successfully!");
       setRecordAdded();
+      setIsProcessing(false);
     });
 };
 

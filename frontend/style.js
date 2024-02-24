@@ -16,6 +16,12 @@ export const commonStyles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 30,
   },
+  title: {
+    fontSize: fontSize * 1.7,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#1AA7EC",
+  },
   rowBar: {
     flexDirection: "row",
     justifyContent: "space-between",

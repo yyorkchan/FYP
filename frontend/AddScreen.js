@@ -1,5 +1,6 @@
 import { React, useState, createRef } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Button,
   ScrollView,
@@ -41,7 +42,7 @@ export const allTypes = [
   { key: "18", value: "Travel" },
 ];
 
-const AddScreen = ({ navigation , setRecordAdded}) => {
+const AddScreen = ({ navigation, setRecordAdded }) => {
   // References to input fields for manipulating their values
   const nameRef = createRef();
   const amountRef = createRef();
@@ -67,6 +68,9 @@ const AddScreen = ({ navigation , setRecordAdded}) => {
 
   const [recurringEndTime, setRecurringEndTime] = useState(null);
   const [isRecurrPickerVisible, setRecurrPickerVisible] = useState(false);
+
+  // Display a loading wheel when the data is being processed
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleConfirm = (time) => {
     setTime(time);
@@ -117,6 +121,7 @@ const AddScreen = ({ navigation , setRecordAdded}) => {
         recurringFreq,
         recurringEndTime,
         setRecordAdded,
+        setIsProcessing,
       );
       resetValues();
     }
@@ -136,155 +141,149 @@ const AddScreen = ({ navigation , setRecordAdded}) => {
   return (
     <ScrollView contentContainerStyle={commonStyles.scrollContainer}>
       <View style={commonStyles.contentArea}>
-        {/* Switch for choosing income or expense */}
-        <SwitchToggle
-          switchOn={isIncome}
-          onPress={() => setIsIncome(!isIncome)}
-          backgroundColorOn="lightblue"
-          backgroundColorOff="lightblue"
-          containerStyle={styles.toggleContainer}
-          circleStyle={styles.toggleCircle}
-          circleColorOn="green"
-          circleColorOff="red"
-          buttonTextStyle={styles.toggleText}
-          buttonText={isIncome ? "Income" : "Expense"}
-        />
-        {/* Input field for name */}
-        <View style={[commonStyles.inputBoxContainer, styles.underline]}>
-          <Text style={commonStyles.inputTitle}>Name</Text>
-          <TextInput
-            ref={nameRef}
-            style={commonStyles.inputField}
-            placeholder="Press to enter name"
-            onChangeText={(name) => setName(name)}
-          />
-        </View>
-        {/* Input field for amount */}
-        <View style={[commonStyles.inputBoxContainer, styles.underline]}>
-          <Text style={commonStyles.inputTitle}>Amount</Text>
-          <TextInput
-            ref={amountRef}
-            style={commonStyles.inputField}
-            keyboardType="numeric"
-            placeholder="Press to enter amount"
-            onChangeText={(amount) => setAmount(amount)}
-          />
-        </View>
-        {/* Input field for date and time */}
-        <View style={commonStyles.inputBoxContainer}>
-          <Text style={commonStyles.inputTitle}>Time & Date</Text>
-          <Button
-            title={
-              time == null
-                ? "Press to select Time & Date"
-                : formatDateTime(time)
-            }
-            onPress={() => setDatePickerVisible(true)}
-          />
-          <DateTimePickerModal
-            isVisible={isDatePickerVisible}
-            mode="datetime"
-            onConfirm={handleConfirm}
-            onCancel={() => setDatePickerVisible(false)}
-            display="inline"
-          />
-        </View>
-        {/* Input field for transaction type */}
-        <View style={commonStyles.inputBoxContainer}>
-          <Text style={commonStyles.inputTitle}>Type</Text>
-          <SelectList
-            data={allTypes}
-            save="value"
-            setSelected={(value) => setCategory(value)}
-            placeholder="Press to select type"
-            search={true}
-            maxHeight={windowHeight * 0.2}
-            inputStyles={commonStyles.inputField}
-            dropdownTextStyles={commonStyles.inputTitle}
-          />
-        </View>
-        {/* Input field for recurring transaction */}
-        <View style={[commonStyles.inputBoxContainer, commonStyles.rowBar]}>
-          <Text style={commonStyles.inputTitle}>Recurring Record</Text>
-          <Switch
-            onValueChange={() => {
-              setIsRecurring(!isRecurring);
-              setRecurringFreq(null);
-            }}
-            value={isRecurring}
-          />
-        </View>
-        {/* Input field for recurring type */}
-        {isRecurring && (
-          <View style={commonStyles.inputBoxContainer}>
-            <Text style={commonStyles.inputTitle}>Recurring Frequency</Text>
-            <SelectList
-              data={recurringFreqs}
-              save="value"
-              setSelected={(value) => setRecurringFreq(value)}
-              placeholder="Press to select frequency"
-              search={false}
-              maxHeight={windowHeight * 0.2}
-              inputStyles={commonStyles.inputField}
-              dropdownTextStyles={commonStyles.inputTitle}
+        {isProcessing == true ? (
+          <>
+            {/* Renders the loading screen */}
+            <ActivityIndicator size="large" color="#add8e6" />
+            <Text style={commonStyles.title}>Loading...</Text>
+          </>
+        ) : (
+          <>
+            {/* Switch for choosing income or expense */}
+            <SwitchToggle
+              switchOn={isIncome}
+              onPress={() => setIsIncome(!isIncome)}
+              backgroundColorOn="lightblue"
+              backgroundColorOff="lightblue"
+              containerStyle={styles.toggleContainer}
+              circleStyle={styles.toggleCircle}
+              circleColorOn="green"
+              circleColorOff="red"
+              buttonTextStyle={styles.toggleText}
+              buttonText={isIncome ? "Income" : "Expense"}
             />
-          </View>
+            {/* Input field for name */}
+            <View style={[commonStyles.inputBoxContainer, styles.underline]}>
+              <Text style={commonStyles.inputTitle}>Name</Text>
+              <TextInput
+                ref={nameRef}
+                style={commonStyles.inputField}
+                placeholder="Press to enter name"
+                onChangeText={(name) => setName(name)}
+              />
+            </View>
+            {/* Input field for amount */}
+            <View style={[commonStyles.inputBoxContainer, styles.underline]}>
+              <Text style={commonStyles.inputTitle}>Amount</Text>
+              <TextInput
+                ref={amountRef}
+                style={commonStyles.inputField}
+                keyboardType="numeric"
+                placeholder="Press to enter amount"
+                onChangeText={(amount) => setAmount(amount)}
+              />
+            </View>
+            {/* Input field for date and time */}
+            <View style={commonStyles.inputBoxContainer}>
+              <Text style={commonStyles.inputTitle}>Time & Date</Text>
+              <Button
+                title={
+                  time == null
+                    ? "Press to select Time & Date"
+                    : formatDateTime(time)
+                }
+                onPress={() => setDatePickerVisible(true)}
+              />
+              <DateTimePickerModal
+                isVisible={isDatePickerVisible}
+                mode="datetime"
+                onConfirm={handleConfirm}
+                onCancel={() => setDatePickerVisible(false)}
+                display="inline"
+              />
+            </View>
+            {/* Input field for transaction type */}
+            <View style={commonStyles.inputBoxContainer}>
+              <Text style={commonStyles.inputTitle}>Type</Text>
+              <SelectList
+                data={allTypes}
+                save="value"
+                setSelected={(value) => setCategory(value)}
+                placeholder="Press to select type"
+                search={true}
+                maxHeight={windowHeight * 0.2}
+                inputStyles={commonStyles.inputField}
+                dropdownTextStyles={commonStyles.inputTitle}
+              />
+            </View>
+            {/* Input field for recurring transaction */}
+            <View style={[commonStyles.inputBoxContainer, commonStyles.rowBar]}>
+              <Text style={commonStyles.inputTitle}>Recurring Record</Text>
+              <Switch
+                onValueChange={() => {
+                  setIsRecurring(!isRecurring);
+                  setRecurringFreq(null);
+                }}
+                value={isRecurring}
+              />
+            </View>
+            {/* Input field for recurring type */}
+            {isRecurring && (
+              <View style={commonStyles.inputBoxContainer}>
+                <Text style={commonStyles.inputTitle}>Recurring Frequency</Text>
+                <SelectList
+                  data={recurringFreqs}
+                  save="value"
+                  setSelected={(value) => setRecurringFreq(value)}
+                  placeholder="Press to select frequency"
+                  search={false}
+                  maxHeight={windowHeight * 0.2}
+                  inputStyles={commonStyles.inputField}
+                  dropdownTextStyles={commonStyles.inputTitle}
+                />
+              </View>
+            )}
+            {/* Input field for recurring end time */}
+            {isRecurring && (
+              <View style={commonStyles.inputBoxContainer}>
+                <Text style={commonStyles.inputTitle}>Recurring End Time</Text>
+                <Button
+                  title={
+                    recurringEndTime == null
+                      ? "Press to select recurring end time"
+                      : formatDateTime(recurringEndTime)
+                  }
+                  onPress={() => setRecurrPickerVisible(true)}
+                />
+                <DateTimePickerModal
+                  isVisible={isRecurrPickerVisible}
+                  mode="datetime"
+                  onConfirm={handleRecurrConfirm}
+                  onCancel={() => setRecurrPickerVisible(false)}
+                  display="inline"
+                />
+              </View>
+            )}
+            {/* Button to add transaction */}
+            <View>
+              <Button
+                title="Add Record"
+                onPress={() =>
+                  handleAddRecord(
+                    name,
+                    category,
+                    amount,
+                    time,
+                    isIncome,
+                    isRecurring,
+                    recurringFreq,
+                    recurringEndTime,
+                  )
+                }
+              />
+            </View>
+          </>
         )}
-        {/* Input field for recurring end time */}
-        {isRecurring && (
-          <View style={commonStyles.inputBoxContainer}>
-            <Text style={commonStyles.inputTitle}>Recurring End Time</Text>
-            <Button
-              title={
-                recurringEndTime == null
-                  ? "Press to select recurring end time"
-                  : formatDateTime(recurringEndTime)
-              }
-              onPress={() => setRecurrPickerVisible(true)}
-            />
-            <DateTimePickerModal
-              isVisible={isRecurrPickerVisible}
-              mode="datetime"
-              onConfirm={handleRecurrConfirm}
-              onCancel={() => setRecurrPickerVisible(false)}
-              display="inline"
-            />
-          </View>
-        )}
-        {/* Button to add transaction */}
-        <View>
-          <Button
-            title="Add Record"
-            onPress={() =>
-              handleAddRecord(
-                name,
-                category,
-                amount,
-                time,
-                isIncome,
-                isRecurring,
-                recurringFreq,
-                recurringEndTime,
-              )
-            }
-          />
-        </View>
-        {/* Debug */}
-        {/* <View style={commonStyles.inputBoxContainer}> */}
-        {/*   <Text style={commonStyles.inputTitle}>Debug</Text> */}
-        {/*   <Text style={commonStyles.inputTitle}> */}
-        {/*     It is {isIncome ? "Income" : "Expense"} */}
-        {/*   </Text> */}
-        {/*   <Text style={commonStyles.inputTitle}>name = {name}</Text> */}
-        {/*   <Text style={commonStyles.inputTitle}> */}
-        {/*     amount = {amount * (2 * isIncome - 1)} */}
-        {/*   </Text> */}
-        {/*   <Text style={commonStyles.inputTitle}> */}
-        {/*     date time = {formatDateTime(time)} */}
-        {/*   </Text> */}
-        {/*   <Text style={commonStyles.inputTitle}>type = {category}</Text> */}
-        {/* <Text style={commonStyles.inputTitle}>Recurring Frequency = {recurringFreq}</Text> */}
-        {/* </View> */}
       </View>
     </ScrollView>
   );

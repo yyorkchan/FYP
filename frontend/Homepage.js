@@ -29,7 +29,7 @@ import {
 } from "./filterSort";
 import { commonStyles, windowHeight, fontSize } from "./style";
 
-const HomeScreen = ({ navigation , isRecordAdded, unsetRecordAdded}) => {
+const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
   // Reactive states
   const filterValueRef = createRef();
   const filterNameRef = createRef();
@@ -65,6 +65,9 @@ const HomeScreen = ({ navigation , isRecordAdded, unsetRecordAdded}) => {
     { key: "3", value: ">" },
     { key: "4", value: "between" },
   ];
+
+  // Display a loading wheel when the data is being processed
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleFilterStart = (time) => {
     setFilterStartTime(time);
@@ -216,16 +219,14 @@ const HomeScreen = ({ navigation , isRecordAdded, unsetRecordAdded}) => {
   }, [transactions]);
 
   return (
-    <ScrollView
-      contentContainerStyle={commonStyles.scrollContainer}
-    >
+    <ScrollView contentContainerStyle={commonStyles.scrollContainer}>
       <View style={commonStyles.contentArea}>
-        <Text style={styles.title}>FYP Finance App</Text>
-        {displayTransactions == null ? (
+        <Text style={commonStyles.title}>FYP Finance App</Text>
+        {transactions == null || displayTransactions == null ? (
           <>
             {/* Renders the loading screen */}
             <ActivityIndicator size="large" color="#add8e6" />
-            <Text style={styles.title}>Loading...</Text>
+            <Text style={commonStyles.title}>Loading...</Text>
           </>
         ) : (
           <>
@@ -407,12 +408,6 @@ const HomeScreen = ({ navigation , isRecordAdded, unsetRecordAdded}) => {
 };
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: fontSize * 1.7,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#1AA7EC",
-  },
   totalBalanceContainer: {
     alignSelf: "center",
     width: "80%",
