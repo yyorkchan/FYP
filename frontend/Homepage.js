@@ -29,7 +29,7 @@ import {
 } from "./filterSort";
 import { commonStyles, windowHeight, fontSize } from "./style";
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation , isRecordAdded, unsetRecordAdded}) => {
   // Reactive states
   const filterValueRef = createRef();
   const filterNameRef = createRef();
@@ -161,6 +161,14 @@ const HomeScreen = ({ navigation }) => {
     // console.log(transactions);
   }, []);
 
+  useEffect(() => {
+    if (isRecordAdded) {
+      // console.log("Record added");
+      getData(setTransactions);
+      unsetRecordAdded();
+    }
+  }, [isRecordAdded]);
+
   // Update displayTransactions when transactions are updated
   // Or sortType/sortOrder/recordNumber are changed
   useEffect(() => {
@@ -210,10 +218,6 @@ const HomeScreen = ({ navigation }) => {
   return (
     <ScrollView
       contentContainerStyle={commonStyles.scrollContainer}
-      onScroll={() => {
-        getData(setTransactions);
-      }}
-      scrollEventThrottle={500}
     >
       <View style={commonStyles.contentArea}>
         <Text style={styles.title}>FYP Finance App</Text>

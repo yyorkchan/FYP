@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
@@ -8,31 +9,46 @@ import TrendScreen from "./frontend/TrendScreen.js";
 // const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-
 export default function App() {
+  const [isRecordAdded, setIsRecordAdded] = useState(false);
+
+  const setRecordAdded = () => {
+    setIsRecordAdded(true);
+  };
+
+  const unsetRecordAdded = () => {
+    setIsRecordAdded(false);
+  };
+
   // console.log(Dimensions.get('window').width)
   return (
     <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen
           name="Home"
-          component={HomeScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="home" color={color} size={size} />
             ),
           }}
-        />
+        >
+          {() => (
+            <HomeScreen
+              isRecordAdded={isRecordAdded}
+              unsetRecordAdded={unsetRecordAdded}
+            />
+          )}
+        </Tab.Screen>
         <Tab.Screen
           name="Add Screen"
-          component={AddScreen}
-          initialParams={{ name: "Bubu" }}
           options={{
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="plus" color={color} size={size} />
             ),
           }}
-        />
+        >
+          {() => <AddScreen setRecordAdded={setRecordAdded} />}
+        </Tab.Screen>
         <Tab.Screen
           name="Trend Screen"
           component={TrendScreen}

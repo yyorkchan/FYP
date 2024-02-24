@@ -41,7 +41,7 @@ export const allTypes = [
   { key: "18", value: "Travel" },
 ];
 
-const AddScreen = ({ navigation }) => {
+const AddScreen = ({ navigation , setRecordAdded}) => {
   // References to input fields for manipulating their values
   const nameRef = createRef();
   const amountRef = createRef();
@@ -116,6 +116,7 @@ const AddScreen = ({ navigation }) => {
         isRecurring,
         recurringFreq,
         recurringEndTime,
+        setRecordAdded,
       );
       resetValues();
     }

@@ -83,6 +83,7 @@ export const createRecord = (
   isRecurring,
   recurringFreq,
   recurringEndTime,
+  setRecordAdded,
 ) => {
   // If isIncome is true, the amount is the same
   // If isIncome is false, the amount is negative the amount
@@ -107,6 +108,7 @@ export const createRecord = (
     })
     .then((data) => {
       Alert.alert("Record created successfully!");
+      setRecordAdded();
     });
 };
 
