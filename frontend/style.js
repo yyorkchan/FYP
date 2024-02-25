@@ -40,7 +40,7 @@ export const commonStyles = StyleSheet.create({
     marginVertical: fontSize * 0.5,
   },
   inputField: {
-    fontSize: fontSize * 1.2,
+    fontSize: fontSize,
     color: "black",
     fontWeight: "bold",
   },
@@ -48,6 +48,7 @@ export const commonStyles = StyleSheet.create({
     fontSize: fontSize,
     fontWeight: "bold",
     color: lightBlue,
+    marginVertical: fontSize * 0.5,
   },
   underline: {
     borderBottomWidth: fontSize * 0.05,

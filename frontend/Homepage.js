@@ -59,16 +59,6 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
 
   const [filterName, setFilterName] = useState(null);
 
-  const filterAmountTypes = [
-    { key: "1", value: "=" },
-    { key: "2", value: "<" },
-    { key: "3", value: ">" },
-    { key: "4", value: "between" },
-  ];
-
-  // Display a loading wheel when the data is being processed
-  const [isProcessing, setIsProcessing] = useState(false);
-
   const handleFilterStart = (time) => {
     setFilterStartTime(time);
     setFilterStartVisible(false);
@@ -142,6 +132,18 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
       setRecordNumber("all");
     } else if (recordNumber === "all") {
       setRecordNumber(5);
+    }
+  };
+
+  const nextFilterAmountType = (filterAmountType) => {
+    if (filterAmountType === "=") {
+      setFilterAmountType("<");
+    } else if (filterAmountType === "<") {
+      setFilterAmountType(">");
+    } else if (filterAmountType === ">") {
+      setFilterAmountType("between");
+    } else if (filterAmountType === "between") {
+      setFilterAmountType("=");
     }
   };
 
@@ -297,50 +299,56 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
             {filterOn && (
               <>
                 <View style={commonStyles.rowBar}>
-                  <SelectList
-                    data={filterAmountTypes}
-                    save="value"
-                    setSelected={(value) => setFilterAmountType(value)}
-                    placeholder="="
-                    search={false}
-                    maxHeight={windowHeight * 0.2}
-                    inputStyles={commonStyles.inputField}
-                    dropdownTextStyles={commonStyles.inputTitle}
-                  />
-                  {filterAmountType !== "between" && (
+                  <Text style={commonStyles.inputTitle}>Amount</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      nextFilterAmountType(filterAmountType);
+                    }}
+                  >
+                    <Text style={commonStyles.button}>{filterAmountType}</Text>
+                  </TouchableOpacity>
+                  {filterAmountType !== "between" ? (
                     <TextInput
                       ref={filterValueRef}
                       style={[commonStyles.inputField, commonStyles.underline]}
-                      placeholder="Amount value"
+                      placeholder="Value"
                       onChangeText={(value) => setFilterAmountValue(value)}
                     />
+                  ) : (
+                    <>
+                      <TextInput
+                        style={[
+                          commonStyles.inputField,
+                          commonStyles.underline,
+                        ]}
+                        placeholder="MIN"
+                        onChangeText={(value) => setFilterAmountMin(value)}
+                      />
+                      <TextInput
+                        style={[
+                          commonStyles.inputField,
+                          commonStyles.underline,
+                        ]}
+                        placeholder="MAX"
+                        onChangeText={(value) => setFilterAmountMax(value)}
+                      />
+                    </>
                   )}
                 </View>
-                {filterAmountType === "between" && (
-                  <View style={commonStyles.rowBar}>
-                    <TextInput
-                      style={commonStyles.inputField}
-                      placeholder="Minimum"
-                      onChangeText={(value) => setFilterAmountMin(value)}
-                    />
-                    <TextInput
-                      style={commonStyles.inputField}
-                      placeholder="Maximun"
-                      onChangeText={(value) => setFilterAmountMax(value)}
-                    />
-                  </View>
-                )}
                 {/* Input field for filter time */}
-                <View style={commonStyles.inputBoxContainer}>
+                <View style={commonStyles.rowBar}>
                   <Text style={commonStyles.inputTitle}>From</Text>
-                  <Button
-                    title={
-                      filterStartTime == null
+                  <TouchableOpacity
+                    onPress={() => {
+                      setFilterStartVisible(true);
+                    }}
+                  >
+                    <Text style={commonStyles.button}>
+                      {filterStartTime == null
                         ? "Filter start time"
-                        : formatDateTime(filterStartTime)
-                    }
-                    onPress={() => setFilterStartVisible(true)}
-                  />
+                        : formatDateTime(filterStartTime)}
+                    </Text>
+                  </TouchableOpacity>
                   <DateTimePickerModal
                     isVisible={isFilterStartVisible}
                     mode="datetime"
@@ -348,15 +356,20 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
                     onCancel={() => setFilterStartVisible(false)}
                     display="inline"
                   />
+                </View>
+                <View style={commonStyles.rowBar}>
                   <Text style={commonStyles.inputTitle}>To</Text>
-                  <Button
-                    title={
-                      filterEndTime == null
+                  <TouchableOpacity
+                    onPress={() => {
+                      setFilterEndVisible(true);
+                    }}
+                  >
+                    <Text style={commonStyles.button}>
+                      {filterEndTime == null
                         ? "Filter end time"
-                        : formatDateTime(filterEndTime)
-                    }
-                    onPress={() => setFilterEndVisible(true)}
-                  />
+                        : formatDateTime(filterEndTime)}
+                    </Text>
+                  </TouchableOpacity>
                   <DateTimePickerModal
                     isVisible={isFilterEndVisible}
                     mode="datetime"
@@ -390,7 +403,9 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
                   />
                 </View>
                 {/* Reset button */}
-                <Button title="Reset" onPress={resetFilter} />
+                <TouchableOpacity onPress={resetFilter}>
+                  <Text style={commonStyles.button}>Reset</Text>
+                </TouchableOpacity>
               </>
             )}
             {/* Renders the display transactions */}

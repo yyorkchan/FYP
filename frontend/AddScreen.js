@@ -8,13 +8,20 @@ import {
   Switch,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { SelectList } from "react-native-dropdown-select-list";
 import SwitchToggle from "react-native-switch-toggle";
 import { createRecord, formatDateTime } from "./util";
-import { commonStyles, windowHeight, windowWidth } from "./style";
+import {
+  commonStyles,
+  lightBlue,
+  windowHeight,
+  windowWidth,
+  fontSize,
+} from "./style";
 
 // Declare UI size constants
 const toggleWidth = Math.min(windowWidth, windowHeight) * 0.8;
@@ -143,7 +150,7 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
         {isProcessing == true ? (
           <>
             {/* Renders the loading screen */}
-            <ActivityIndicator size="large" color="#add8e6" />
+            <ActivityIndicator size="large" color={lightBlue} />
             <Text style={commonStyles.title}>Loading...</Text>
           </>
         ) : (
@@ -187,24 +194,25 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
               />
             </View>
             {/* Input field for date and time */}
-            <View style={commonStyles.inputBoxContainer}>
-              <Text style={commonStyles.inputTitle}>Time & Date</Text>
-              <Button
-                title={
-                  time == null
-                    ? "Press to select Time & Date"
-                    : formatDateTime(time)
-                }
-                onPress={() => setDatePickerVisible(true)}
-              />
-              <DateTimePickerModal
-                isVisible={isDatePickerVisible}
-                mode="datetime"
-                onConfirm={handleConfirm}
-                onCancel={() => setDatePickerVisible(false)}
-                display="inline"
-              />
-            </View>
+            <Text
+              style={[commonStyles.inputTitle, commonStyles.inputBoxContainer]}
+            >
+              Time & Date
+            </Text>
+            <TouchableOpacity onPress={() => setDatePickerVisible(true)}>
+              <Text style={commonStyles.button}>
+                {time == null
+                  ? "Press to select Time & Date"
+                  : formatDateTime(time)}
+              </Text>
+            </TouchableOpacity>
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode="datetime"
+              onConfirm={handleConfirm}
+              onCancel={() => setDatePickerVisible(false)}
+              display="inline"
+            />
             {/* Input field for transaction type */}
             <View style={commonStyles.inputBoxContainer}>
               <Text style={commonStyles.inputTitle}>Type</Text>
@@ -232,32 +240,38 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
             </View>
             {/* Input field for recurring type */}
             {isRecurring && (
-              <View style={commonStyles.inputBoxContainer}>
-                <Text style={commonStyles.inputTitle}>Recurring Frequency</Text>
-                <SelectList
-                  data={recurringFreqs}
-                  save="value"
-                  setSelected={(value) => setRecurringFreq(value)}
-                  placeholder="Press to select frequency"
-                  search={false}
-                  maxHeight={windowHeight * 0.2}
-                  inputStyles={commonStyles.inputField}
-                  dropdownTextStyles={commonStyles.inputTitle}
-                />
-              </View>
-            )}
-            {/* Input field for recurring end time */}
-            {isRecurring && (
-              <View style={commonStyles.inputBoxContainer}>
-                <Text style={commonStyles.inputTitle}>Recurring End Time</Text>
-                <Button
-                  title={
-                    recurringEndTime == null
+              <>
+                <View style={commonStyles.inputBoxContainer}>
+                  <Text style={commonStyles.inputTitle}>
+                    Recurring Frequency
+                  </Text>
+                  <SelectList
+                    data={recurringFreqs}
+                    save="value"
+                    setSelected={(value) => setRecurringFreq(value)}
+                    placeholder="Press to select frequency"
+                    search={false}
+                    maxHeight={windowHeight * 0.2}
+                    inputStyles={commonStyles.inputField}
+                    dropdownTextStyles={commonStyles.inputTitle}
+                  />
+                </View>
+                {/* Input field for recurring end time */}
+                <Text
+                  style={[
+                    commonStyles.inputTitle,
+                    commonStyles.inputBoxContainer,
+                  ]}
+                >
+                  Recurring End Time
+                </Text>
+                <TouchableOpacity onPress={() => setRecurrPickerVisible(true)}>
+                  <Text style={commonStyles.button}>
+                    {recurringEndTime == null
                       ? "Press to select recurring end time"
-                      : formatDateTime(recurringEndTime)
-                  }
-                  onPress={() => setRecurrPickerVisible(true)}
-                />
+                      : formatDateTime(recurringEndTime)}
+                  </Text>
+                </TouchableOpacity>
                 <DateTimePickerModal
                   isVisible={isRecurrPickerVisible}
                   mode="datetime"
@@ -265,12 +279,11 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
                   onCancel={() => setRecurrPickerVisible(false)}
                   display="inline"
                 />
-              </View>
+              </>
             )}
             {/* Button to add transaction */}
             <View>
-              <Button
-                title="Add Record"
+              <TouchableOpacity
                 onPress={() =>
                   handleAddRecord(
                     name,
@@ -283,7 +296,9 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
                     recurringEndTime,
                   )
                 }
-              />
+              >
+                <Text style={commonStyles.button}>Add Record</Text>
+              </TouchableOpacity>
             </View>
           </>
         )}
@@ -309,6 +324,7 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     fontWeight: "bold",
+    fontSize: fontSize * 0.8,
   },
 });
 

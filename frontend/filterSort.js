@@ -38,12 +38,22 @@ export const filterTransactionTime = (
   filterStartTime,
   filterEndTime,
 ) => {
-  if (filterStartTime == null || filterEndTime == null) return transactions;
-  return transactions.filter(
-    (transaction) =>
-      new Date(transaction.time) >= filterStartTime &&
-      new Date(transaction.time) <= filterEndTime,
-  );
+  if (filterStartTime == null && filterEndTime == null) return transactions;
+  else if (filterStartTime == null) {
+    return transactions.filter(
+      (transaction) => new Date(transaction.time) <= filterEndTime,
+    );
+  } else if (filterEndTime == null) {
+    return transactions.filter(
+      (transaction) => new Date(transaction.time) >= filterStartTime,
+    );
+  } else {
+    return transactions.filter(
+      (transaction) =>
+        new Date(transaction.time) >= filterStartTime &&
+        new Date(transaction.time) <= filterEndTime,
+    );
+  }
 };
 
 export const filterTransactionCategory = (transactions, filterCategory) => {
