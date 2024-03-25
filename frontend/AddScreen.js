@@ -28,6 +28,7 @@ const toggleWidth = Math.min(windowWidth, windowHeight) * 0.8;
 const toggleHeight = toggleWidth * 0.1;
 
 export const allTypes = [
+  { key: "0", value: "All" },
   { key: "1", value: "Bills" },
   { key: "2", value: "Education" },
   { key: "3", value: "Entertainment" },
@@ -215,7 +216,7 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
             <View style={commonStyles.inputBoxContainer}>
               <Text style={commonStyles.inputTitle}>Type</Text>
               <SelectList
-                data={allTypes}
+                data={allTypes.slice(1)}
                 save="value"
                 setSelected={(value) => setCategory(value)}
                 placeholder="Select type"
@@ -280,24 +281,22 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
               </>
             )}
             {/* Button to add transaction */}
-            <View>
-              <TouchableOpacity
-                onPress={() =>
-                  handleAddRecord(
-                    name,
-                    category,
-                    amount,
-                    time,
-                    isIncome,
-                    isRecurring,
-                    recurringFreq,
-                    recurringEndTime,
-                  )
-                }
-              >
-                <Text style={commonStyles.button}>Add Record</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              onPress={() =>
+                handleAddRecord(
+                  name,
+                  category,
+                  amount,
+                  time,
+                  isIncome,
+                  isRecurring,
+                  recurringFreq,
+                  recurringEndTime,
+                )
+              }
+            >
+              <Text style={commonStyles.button}>Add Record</Text>
+            </TouchableOpacity>
           </>
         )}
       </View>

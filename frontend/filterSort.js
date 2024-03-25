@@ -57,7 +57,7 @@ export const filterTransactionTime = (
 };
 
 export const filterTransactionCategory = (transactions, filterCategory) => {
-  if (filterCategory == null) return transactions;
+  if (filterCategory == null || filterCategory == "All") return transactions;
   return transactions.filter(
     (transaction) => transaction.category === filterCategory,
   );
