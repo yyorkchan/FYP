@@ -37,14 +37,12 @@ import {
   paleBlue,
 } from "./style";
 
-const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
+const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded, transactions, setTransactions }) => {
   // Reactive states
   const filterValueRef = createRef();
   const filterNameRef = createRef();
 
   const [totalBalance, setTotalBalance] = useState(0);
-  // Internal storage for all transactions
-  const [transactions, setTransactions] = useState(null);
   // External storage for displaying transactions
   const [displayTransactions, setDisplayTransactions] = useState(null);
   const [sortType, setSortType] = useState("Recent"); // ["Recent", "Amount", "Category"]

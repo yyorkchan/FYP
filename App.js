@@ -11,6 +11,8 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   const [isRecordAdded, setIsRecordAdded] = useState(false);
+  // Internal storage for all transactions
+  const [transactions, setTransactions] = useState(null);
 
   const setRecordAdded = () => {
     setIsRecordAdded(true);
@@ -36,6 +38,8 @@ export default function App() {
             <HomeScreen
               isRecordAdded={isRecordAdded}
               unsetRecordAdded={unsetRecordAdded}
+              transactions={transactions}
+              setTransactions={setTransactions}
             />
           )}
         </Tab.Screen>
@@ -51,8 +55,6 @@ export default function App() {
         </Tab.Screen>
         <Tab.Screen
           name="Trend Screen"
-          component={TrendScreen}
-          initialParams={{ name: "Bubu" }}
           options={{
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons
@@ -62,7 +64,9 @@ export default function App() {
               />
             ),
           }}
-        />
+        >
+          {() => <TrendScreen transactions={transactions} />}
+        </Tab.Screen>
       </Tab.Navigator>
     </NavigationContainer>
   );

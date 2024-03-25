@@ -31,7 +31,12 @@ const predictTimeTypes = [
   { key: "5", value: "1 Year" },
 ];
 
-const TrendScreen = ({ navigation }) => {
+const predict = (transactions, predictTo, category) => {
+  console.log(transactions);
+  console.log(`Number of transactions: ${transactions.length}`);
+}
+
+const TrendScreen = ({ navigation, transactions }) => {
   const [predictTo, setPredictTo] = useState("");
   const [category, setCategory] = useState("");
 
@@ -67,7 +72,7 @@ const TrendScreen = ({ navigation }) => {
           />
         </View>
         {/* Predict button */}
-        <TouchableOpacity onPress={() => console.log("Predict")}>
+        <TouchableOpacity onPress={() => predict(transactions, predictTo, category)}>
           <Text style={commonStyles.button}>Predict</Text>
         </TouchableOpacity>
       </View>
