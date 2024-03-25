@@ -27,7 +27,15 @@ import {
   filterTransactionName,
   sortTransactions,
 } from "./filterSort";
-import { commonStyles, windowHeight, fontSize, lightBlue } from "./style";
+import {
+  commonStyles,
+  windowHeight,
+  fontSize,
+  lightGray,
+  darkGray,
+  lightBlue,
+  paleBlue,
+} from "./style";
 
 const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
   // Reactive states
@@ -345,7 +353,7 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
                   >
                     <Text style={commonStyles.button}>
                       {filterStartTime == null
-                        ? "Filter start time"
+                        ? "Start time"
                         : formatDateTime(filterStartTime)}
                     </Text>
                   </TouchableOpacity>
@@ -366,7 +374,7 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
                   >
                     <Text style={commonStyles.button}>
                       {filterEndTime == null
-                        ? "Filter end time"
+                        ? "End time"
                         : formatDateTime(filterEndTime)}
                     </Text>
                   </TouchableOpacity>
@@ -409,7 +417,6 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
               </>
             )}
             {/* Renders the display transactions */}
-            <Text style={styles.recentTransactions}>Transactions</Text>
             {displayTransactions.map((transaction, index) => (
               <TouchableOpacity
                 key={index}
@@ -447,12 +454,14 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded }) => {
 const styles = StyleSheet.create({
   totalBalanceContainer: {
     alignSelf: "center",
+    alignItems: "center",
     width: "80%",
     padding: fontSize * 0.6,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: lightGray,
     borderWidth: fontSize * 0.05,
-    borderColor: "#00b4d8",
+    borderColor: paleBlue,
     borderRadius: fontSize * 0.5,
+    marginBottom: fontSize * 0.5,
   },
   totalBalanceText: {
     fontSize: fontSize * 1.2,
@@ -468,9 +477,9 @@ const styles = StyleSheet.create({
     width: "80%",
     marginBottom: fontSize * 0.5,
     padding: fontSize * 0.5,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: lightGray,
     borderWidth: fontSize * 0.05,
-    borderColor: "#00b4d8",
+    borderColor: paleBlue,
     borderRadius: fontSize * 0.5,
   },
   topTransactionBar: {
@@ -497,7 +506,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize * 0.9,
     fontWeight: "bold",
     flexWrap: "wrap",
-    color: "#808080",
+    color: darkGray,
   },
 });
 

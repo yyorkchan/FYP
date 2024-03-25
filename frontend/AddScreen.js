@@ -201,9 +201,7 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
             </Text>
             <TouchableOpacity onPress={() => setDatePickerVisible(true)}>
               <Text style={commonStyles.button}>
-                {time == null
-                  ? "Press to select Time & Date"
-                  : formatDateTime(time)}
+                {time == null ? "Select Time & Date" : formatDateTime(time)}
               </Text>
             </TouchableOpacity>
             <DateTimePickerModal
@@ -220,7 +218,7 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
                 data={allTypes}
                 save="value"
                 setSelected={(value) => setCategory(value)}
-                placeholder="Press to select type"
+                placeholder="Select type"
                 search={true}
                 maxHeight={windowHeight * 0.2}
                 inputStyles={commonStyles.inputField}
@@ -249,7 +247,7 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
                     data={recurringFreqs}
                     save="value"
                     setSelected={(value) => setRecurringFreq(value)}
-                    placeholder="Press to select frequency"
+                    placeholder="Select frequency"
                     search={false}
                     maxHeight={windowHeight * 0.2}
                     inputStyles={commonStyles.inputField}
@@ -268,7 +266,7 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
                 <TouchableOpacity onPress={() => setRecurrPickerVisible(true)}>
                   <Text style={commonStyles.button}>
                     {recurringEndTime == null
-                      ? "Press to select recurring end time"
+                      ? "Select recurring end time"
                       : formatDateTime(recurringEndTime)}
                   </Text>
                 </TouchableOpacity>

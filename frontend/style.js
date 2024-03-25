@@ -5,7 +5,11 @@ export const windowWidth = Dimensions.get("window").width;
 export const windowHeight = Dimensions.get("window").height;
 
 export const fontSize = Math.min(windowWidth, windowHeight) * 0.045;
-export const lightBlue = "#1AA7EC";
+
+export const lightBlue = "#1aa7ec";
+export const paleBlue = "#00b4d8";
+export const darkGray = "#808080";
+export const lightGray = "#f2f2f2";
 
 export const commonStyles = StyleSheet.create({
   scrollContainer: {
@@ -27,7 +31,7 @@ export const commonStyles = StyleSheet.create({
     justifyContent: "space-between",
     width: "80%",
     alignItems: "center",
-    margin: fontSize * 0.1,
+    marginBottom: fontSize * 0.25,
   },
   inputBoxContainer: {
     width: "80%",
@@ -49,6 +53,11 @@ export const commonStyles = StyleSheet.create({
     fontWeight: "bold",
     color: lightBlue,
     marginVertical: fontSize * 0.5,
+    paddingHorizontal: fontSize * 0.5,
+    paddingVertical: fontSize * 0.25,
+    borderWidth: fontSize * 0.05,
+    borderColor: lightBlue,
+    borderRadius: fontSize * 0.5,
   },
   underline: {
     borderBottomWidth: fontSize * 0.05,
