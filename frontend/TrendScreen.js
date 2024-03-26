@@ -48,9 +48,10 @@ const encode = (transactions, timeScale, category) => {
   // value = sum(transaction.amount) in the same time index
   const zeroTime = new Date(relatedTransactions[0].time);
   let times = [];
-  let values = [];
+  // Stores the total balance at each time
+  let deltaIncome = [];
 
-  // Convert to times and values
+  // Convert to times and deltaIncome
   relatedTransactions.forEach((transaction) => {
     const unitTimeOffset = Math.round(
       (new Date(transaction.time) - zeroTime) / unitTime,
@@ -59,16 +60,22 @@ const encode = (transactions, timeScale, category) => {
       times.push(unitTimeOffset);
     }
     const timeIdx = times.indexOf(unitTimeOffset);
-    if (values.length <= timeIdx) {
-      values.push(0);
+    if (deltaIncome.length <= timeIdx) {
+      deltaIncome.push(0);
     }
-    values[timeIdx] += transaction.amount;
+    deltaIncome[timeIdx] += transaction.amount
+  });
+
+  // Convert to values which is the total balance at each time
+  values = [];
+  let sum = 0;
+  deltaIncome.forEach((deltaValue) => {
+    sum += deltaValue;
+    values.push(sum);
   });
 
   console.log(`Times: ${times}`);
   console.log(`Values: ${values}`);
-  console.log(`Sum of values: ${values.reduce((a, b) => a + b, 0)}`);
-
   return [times, values];
 };
 
@@ -77,6 +84,7 @@ const decode = (transactions, timeScale) => {
   const currentTime = new Date();
   const zeroTime = new Date(transactions[0].time);
   const currentTimeUnit = Math.round((currentTime - zeroTime) / unitTime);
+  const latestTimeUnit = Math.round((new Date(transactions[transactions.length - 1].time) - zeroTime) / unitTime);
   const duration = timeScale.times;
 
   // Get the next times
@@ -94,7 +102,7 @@ const decode = (transactions, timeScale) => {
     return currentTime.add((time - currentTimeUnit) * value, unit).format(timeFormat);
   });
   // console.log(displayTimes);
-  return [nextTimes, displayTimes];
+  return [nextTimes, displayTimes, latestTimeUnit];
 }
 
 const predict = (transactions, predictTo, category) => {
@@ -114,6 +122,10 @@ const predict = (transactions, predictTo, category) => {
     return;
   }
 
+  // Decode the next times to date for printing
+  const [nextTimes, nextDisplayTimes, latestTimeUnit] = decode(transactions, timeScale);
+  console.log(`Next times: ${nextTimes}`);
+
   // Get estimators
   // Given times and values -> best estimator
   // times = [1, 2, 3, 4], values = [3, 9, 14, 18]
@@ -122,13 +134,11 @@ const predict = (transactions, predictTo, category) => {
     console.log("Not enough data to predict");
     return;
   }
-
-  // Decode the next times to date for printing
-  const [nextTimes, nextDisplayTimes] = decode(transactions, timeScale);
-  console.log(`Next times: ${nextTimes}`);
+  const valueOffset = bestEstimator(latestTimeUnit) - values[values.length - 1];
+  const tunedEstimator = (time) => bestEstimator(time) - valueOffset;
 
   // Predict the next values
-  const nextValues = nextTimes.map((time) => bestEstimator(time));
+  const nextValues = nextTimes.map((time) => tunedEstimator(time));
   console.log(`Next values: ${nextValues}`);
   console.log(`Next display times: ${nextDisplayTimes}`);
 };
