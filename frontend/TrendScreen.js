@@ -1,26 +1,14 @@
-import { React, useState, createRef } from "react";
+import { React, useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
-  Button,
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
-import {
-  commonStyles,
-  windowHeight,
-  fontSize,
-  lightGray,
-  darkGray,
-  lightBlue,
-  paleBlue,
-} from "./style";
+import { commonStyles, windowHeight } from "./style";
 import { allTypes } from "./AddScreen";
 import { filterTransactionCategory } from "./filterSort";
 import { getBestEstimator } from "./estimator";
@@ -45,10 +33,11 @@ const encode = (transactions, timeScale, category) => {
 
   // Summerise transactions within unit time
   // time = (transaction.time - zeroTime) / unitTime rounded off
-  // value = sum(transaction.amount) in the same time index
+  // value = total balance at a unit time
   const zeroTime = new Date(relatedTransactions[0].time);
   let times = [];
-  // Stores the total balance at each time
+  // deltaIncome is the change in balance
+  // Which will be converted to total balance
   let deltaIncome = [];
 
   // Convert to times and deltaIncome
@@ -63,11 +52,11 @@ const encode = (transactions, timeScale, category) => {
     if (deltaIncome.length <= timeIdx) {
       deltaIncome.push(0);
     }
-    deltaIncome[timeIdx] += transaction.amount
+    deltaIncome[timeIdx] += transaction.amount;
   });
 
   // Convert to values which is the total balance at each time
-  values = [];
+  let values = [];
   let sum = 0;
   deltaIncome.forEach((deltaValue) => {
     sum += deltaValue;
@@ -84,7 +73,10 @@ const decode = (transactions, timeScale) => {
   const currentTime = new Date();
   const zeroTime = new Date(transactions[0].time);
   const currentTimeUnit = Math.round((currentTime - zeroTime) / unitTime);
-  const latestTimeUnit = Math.round((new Date(transactions[transactions.length - 1].time) - zeroTime) / unitTime);
+  const latestTimeUnit = Math.round(
+    (new Date(transactions[transactions.length - 1].time) - zeroTime) /
+      unitTime,
+  );
   const duration = timeScale.times;
 
   // Get the next times
@@ -99,52 +91,71 @@ const decode = (transactions, timeScale) => {
   const timeFormat = timeScale.format;
   const displayTimes = nextTimes.map((time) => {
     const currentTime = new moment();
-    return currentTime.add((time - currentTimeUnit) * value, unit).format(timeFormat);
+    return currentTime
+      .add((time - currentTimeUnit) * value, unit)
+      .format(timeFormat);
   });
   // console.log(displayTimes);
   return [nextTimes, displayTimes, latestTimeUnit];
-}
+};
 
 const predict = (transactions, predictTo, category) => {
   const toTimeScale = {
-    "1 Week": {"value": 1, "unit": 'd', "unitInDay": 1, "times": 7, "format": "DD/MM"},
-    "1 Month": {"value": 7, "unit": 'd', "unitInDay": 1, "times": 4, "format": "DD/MM"},
-    "3 Months": {"value": 14, "unit": 'd', "unitInDay": 1, "times": 6, "format": "DD/MM"},
-    "6 Months": {"value": 1, "unit": 'M', "unitInDay": 30, "times": 6, "format": "MM/YY"},
-    "1 Year": {"value": 2, "unit": 'M', "unitInDay": 30, "times": 6, "format": "MM/YY"},
+    "1 Week": { value: 1, unit: "d", unitInDay: 1, times: 7, format: "DD/MM" },
+    "1 Month": { value: 7, unit: "d", unitInDay: 1, times: 4, format: "DD/MM" },
+    "3 Months": {
+      value: 14,
+      unit: "d",
+      unitInDay: 1,
+      times: 6,
+      format: "DD/MM",
+    },
+    "6 Months": {
+      value: 1,
+      unit: "M",
+      unitInDay: 30,
+      times: 6,
+      format: "MM/YY",
+    },
+    "1 Year": { value: 2, unit: "M", unitInDay: 30, times: 6, format: "MM/YY" },
   };
 
   // Encode transactions
+  if (predictTo == null) {
+    Alert.alert("Please select a prediction period");
+    return;
+  }
   const timeScale = toTimeScale[predictTo];
   const [times, values] = encode(transactions, timeScale, category);
   if (times.length == 0) {
-    console.log("No transactions in this category");
+    Alert.alert("No transactions in the selected record type");
     return;
   }
 
   // Decode the next times to date for printing
-  const [nextTimes, nextDisplayTimes, latestTimeUnit] = decode(transactions, timeScale);
+  const [nextTimes, nextDisplayTimes, latestTimeUnit] = decode(
+    transactions,
+    timeScale,
+  );
   console.log(`Next times: ${nextTimes}`);
 
   // Get estimators
-  // Given times and values -> best estimator
-  // times = [1, 2, 3, 4], values = [3, 9, 14, 18]
-  const bestEstimator = getBestEstimator(times, values);
+  const bestEstimator = getBestEstimator(times, values, latestTimeUnit);
   if (bestEstimator == null) {
-    console.log("Not enough data to predict");
+    Alert.alert("Not enough data to predict");
     return;
   }
-  const valueOffset = bestEstimator(latestTimeUnit) - values[values.length - 1];
-  const tunedEstimator = (time) => bestEstimator(time) - valueOffset;
 
   // Predict the next values
-  const nextValues = nextTimes.map((time) => tunedEstimator(time));
+  const nextValues = nextTimes.map((time) => parseInt(bestEstimator(time)));
   console.log(`Next values: ${nextValues}`);
   console.log(`Next display times: ${nextDisplayTimes}`);
+
+  return [nextDisplayTimes, nextValues];
 };
 
 const TrendScreen = ({ navigation, transactions }) => {
-  const [predictTo, setPredictTo] = useState("");
+  const [predictTo, setPredictTo] = useState(null);
   const [category, setCategory] = useState("All");
 
   return (

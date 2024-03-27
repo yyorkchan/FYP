@@ -11,14 +11,7 @@ const linearEstimator = (times, values) => {
   // Construct the linear estimator
   const linearFunction = (x) => m * x + c;
 
-  console.log(`The best fit line: y = ${m}x + ${c}`);
-  // Output the estimated value for each point
-  times.forEach((time, i) =>
-    console.log(
-      `Estimated value for time ${time}: ${linearFunction(time).toFixed(3)} vs actual value: ${values[i]}`,
-    ),
-  );
-  console.log("\n");
+  // console.log(`The best fit line: y = ${m}x + ${c}`);
   return linearFunction;
 };
 
@@ -45,14 +38,7 @@ const quadraticEstimator = (times, values) => {
   // Construct the quadratic estimator
   const quadraticFunction = (x) => c0 + c1 * x + c2 * x * x;
 
-  console.log(`The best fit quadratic: y = ${c0} + ${c1}x + ${c2}x^2`);
-  // Output the estimated value for each point
-  times.forEach((time, i) =>
-    console.log(
-      `Estimated value for time ${time}: ${quadraticFunction(time).toFixed(3)} vs actual value: ${values[i]}`,
-    ),
-  );
-  console.log("\n");
+  // console.log(`The best fit quadratic: y = ${c0} + ${c1}x + ${c2}x^2`);
   return quadraticFunction;
 };
 
@@ -76,39 +62,48 @@ const expEstimator = (times, values) => {
   // Construct the exp estimator
   const expFunction = (x) => c * Math.exp(m * x) + h;
 
-  console.log(`The best fit exp: y = ${c} * e^(${m}x) + ${h}`);
-  // Output the estimated value for each point
-  times.forEach((time, i) =>
-    console.log(
-      `Estimated value for time ${time}: ${expFunction(time).toFixed(3)} vs actual value: ${values[i]}`,
-    ),
-  );
-  console.log("\n");
+  // console.log(`The best fit exp: y = ${c} * e^(${m}x) + ${h}`);
   return expFunction;
 };
 
-const getSquareError = (times, labels, estimator) => {
+const getLogError = (times, labels, estimator) => {
   const n = times.length;
   const error = labels.reduce(
     (a, b, i) => a + (b - estimator(times[i])) ** 2,
     0,
   );
-  return error / n;
+  return Math.log(error / n);
 };
 
-export const getBestEstimator = (times, values) => {
+export const getBestEstimator = (times, values, latestTimeUnit) => {
   const linearFunction = linearEstimator(times, values);
   const quadraticFunction = quadraticEstimator(times, values);
   const expFunction = expEstimator(times, values);
 
   const functions = [linearFunction, quadraticFunction, expFunction];
-  const errors = functions.map((func) => getSquareError(times, values, func));
-  console.log(`Square error for linear: ${errors[0]}`);
-  console.log(`Square error for quadratic: ${errors[1]}`);
-  console.log(`Square error for exp: ${errors[2]}`);
-  console.log("\n");
+  const valueOffsets = functions.map(
+    (func) => func(latestTimeUnit) - values[values.length - 1],
+  );
+  const tunedFunctions = functions.map(
+    (func, i) => (x) => func(x) - valueOffsets[i],
+  );
+  const errors = tunedFunctions.map((func) =>
+    getLogError(times, values, func),
+  );
+
+  // Debug output
+  // Output the estimated value for each point
+  // tunedFunctions.forEach((func, j) => {
+  //   times.forEach((time, i) => {
+  //     console.log(
+  //       `[F${j}] Estimated ${time}: ${func(time).toFixed(3)} vs Actual: ${values[i]}`,
+  //     );
+  //   });
+  //     console.log(`Log error for [F${j}]: ${errors[j]}`);
+  //     console.log("\n");
+  // });
 
   const bestIndex = errors.indexOf(Math.min(...errors));
-  console.log(`The best estimator is: ${bestIndex}`);
-  return functions[bestIndex];
+  // console.log(`The best estimator is: ${bestIndex}`);
+  return tunedFunctions[bestIndex];
 };
