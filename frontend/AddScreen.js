@@ -14,7 +14,7 @@ import {
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { SelectList } from "react-native-dropdown-select-list";
 import SwitchToggle from "react-native-switch-toggle";
-import { createRecord, formatDateTime } from "./util";
+import { createRecord, formatDateTime } from "../util/helper";
 import {
   commonStyles,
   lightBlue,

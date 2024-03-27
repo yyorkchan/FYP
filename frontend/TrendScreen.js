@@ -9,7 +9,8 @@ import {
 import { SelectList } from "react-native-dropdown-select-list";
 import { commonStyles, windowHeight } from "./style";
 import { allTypes } from "./AddScreen";
-import { encode, decode, getBestEstimator } from "./estimator";
+import { encode, decode, getBestEstimator } from "../util/estimator";
+import { filterTransactionCategory } from "../util/filterSort";
 
 const predictTimeTypes = [
   { key: "1", value: "1 Week" },
@@ -45,16 +46,17 @@ const predict = (transactions, predictTo, category) => {
     Alert.alert("Please select a prediction period");
     return;
   }
-  const timeScale = toTimeScale[predictTo];
-  const [times, values] = encode(transactions, timeScale, category);
-  if (times.length == 0) {
+  const filteredTransactions = filterTransactionCategory(transactions, category);
+  if (filteredTransactions.length == 0) {
     Alert.alert("No transactions in the selected record type");
     return;
   }
+  const timeScale = toTimeScale[predictTo];
+  const [times, values] = encode(filteredTransactions, timeScale, category);
 
   // Decode the next times to date for printing
   const [nextTimes, nextDisplayTimes, latestTimeUnit] = decode(
-    transactions,
+    filteredTransactions,
     timeScale,
   );
   // console.log(`Next times: ${nextTimes}`);

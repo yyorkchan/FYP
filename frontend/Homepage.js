@@ -2,7 +2,6 @@ import { React, useState, useEffect, createRef } from "react";
 import {
   ActivityIndicator,
   Alert,
-  Button,
   ScrollView,
   StyleSheet,
   Text,
@@ -19,14 +18,14 @@ import {
   deleteRecord,
   formatDateTime,
   formatShortDateTime,
-} from "./util";
+} from "../util/helper";
 import {
   filterTransactionAmount,
   filterTransactionTime,
   filterTransactionCategory,
   filterTransactionName,
   sortTransactions,
-} from "./filterSort";
+} from "../util/filterSort";
 import {
   commonStyles,
   windowHeight,

@@ -1,26 +1,19 @@
-import { filterTransactionCategory } from "./filterSort";
 import moment from "moment";
 
 export const encode = (transactions, timeScale, category) => {
   const unitTime = timeScale.value * timeScale.unitInDay * 60 * 60 * 24 * 1000;
 
-  // Extract transactions for the category
-  const relatedTransactions = filterTransactionCategory(transactions, category);
-  if (relatedTransactions.length == 0) {
-    return [[], []];
-  }
-
   // Summerise transactions within unit time
   // time = (transaction.time - zeroTime) / unitTime rounded off
   // value = total balance at a unit time
-  const zeroTime = new Date(relatedTransactions[0].time);
+  const zeroTime = new Date(transactions[0].time);
   let times = [];
   // deltaIncome is the change in balance
   // Which will be converted to total balance
   let deltaIncome = [];
 
   // Convert to times and deltaIncome
-  relatedTransactions.forEach((transaction) => {
+  transactions.forEach((transaction) => {
     const unitTimeOffset = Math.round(
       (new Date(transaction.time) - zeroTime) / unitTime,
     );
