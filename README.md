@@ -15,7 +15,8 @@ This is Our FYP. ｡ﾟヽ(ﾟ ´Д`)ﾉﾟ｡
 
 Next up (๑•̀ㅂ•́)و✧ 🔥
 
-- Research what machine learning model to use (York)
+- Implement a graph for display predicted values (York)
+- (Optional) Use a LLM to describe the trend (York)
 
 Done! ✧◝(⁰▿⁰)◜✧ ✅
 
@@ -31,6 +32,8 @@ Done! ✧◝(⁰▿⁰)◜✧ ✅
 10. Added Delete records function: Legendarily Done! ٩(｡・ω・｡)و
 11. Implement Sort & Filter in Home Screen
 12. Only Allow Non-empty value in Add Screen
+13. Built partially the trend screen frontend
+14. Powerful and efficient regression model for processing transactions
 
 ## General Structure
 
@@ -39,11 +42,21 @@ Done! ✧◝(⁰▿⁰)◜✧ ✅
 - App.js is the main Javascript file that contains all the Pages to be navigate
 - All 3 frontend pages should be contained in the folder "/frontend"
 - All unique css should be included at the end of the corresponding frontend js, Read Homepage.js for the detailed formatting
-- All common css should be included in "style.js", including fontSize, windowSizes etc.
-- Functions for filtering and sorting are located in "filterSort.js"
-- Helper functions are located in "util.js"
+- All common css should be included in "style.js", including fontSize, windowSizes etc
 
 ### Backend
 
 - index.js is the main Javascript file for express server which hosts fetch, add and delete endpoint via retool
 - retool.js runs sql queries on retool, retrieving, adding and deleting records
+
+### Util
+
+- filterSort.js contains functions for filtering and sorting transactions
+- helper.js contains miscellaneous functions and some generic constants
+- estimator.js contains regression models with pre-preprocessing functions
+
+### Points to note when working with regression
+- The "predict" function in "TrendScreen.js" is responsible for producing the predictions. It returns nextDisplayTimes and nextValues
+- nextDisplayTimes is an array of date string, in format DD/MM or MM/YY according to duration
+- nextValues is an array of predicted values corresponding to the dates in nextDisplayTimes
+- You may see their values in Expo console after pressing the "predict" button in the TrendScreen
