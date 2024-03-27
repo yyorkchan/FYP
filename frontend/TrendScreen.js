@@ -1,11 +1,5 @@
 import { React, useState } from "react";
-import {
-  Alert,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
 import { commonStyles, windowHeight } from "./style";
 import { allTypes } from "./AddScreen";
@@ -41,16 +35,21 @@ const predict = (transactions, predictTo, category) => {
     "1 Year": { value: 2, unit: "M", unitInDay: 30, times: 6, format: "MM/YY" },
   };
 
-  // Encode transactions
+  // Perform checks
+  const filteredTransactions = filterTransactionCategory(
+    transactions,
+    category,
+  );
   if (predictTo == null) {
     Alert.alert("Please select a prediction period");
     return;
   }
-  const filteredTransactions = filterTransactionCategory(transactions, category);
   if (filteredTransactions.length == 0) {
     Alert.alert("No transactions in the selected record type");
     return;
   }
+
+  // Encode transactions
   const timeScale = toTimeScale[predictTo];
   const [times, values] = encode(filteredTransactions, timeScale, category);
 

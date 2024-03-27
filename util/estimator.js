@@ -4,7 +4,6 @@ export const encode = (transactions, timeScale, category) => {
   const unitTime = timeScale.value * timeScale.unitInDay * 60 * 60 * 24 * 1000;
 
   // Summerise transactions within unit time
-  // time = (transaction.time - zeroTime) / unitTime rounded off
   // value = total balance at a unit time
   const zeroTime = new Date(transactions[0].time);
   let times = [];
@@ -84,7 +83,6 @@ const linearEstimator = (times, values) => {
   const Sy = values.reduce((a, b) => a + b, 0);
   const Sxy = times.reduce((a, b, i) => a + b * values[i], 0);
   const Sxx = times.reduce((a, b) => a + b * b, 0);
-  const Syy = values.reduce((a, b) => a + b * b, 0);
   const m = (n * Sxy - Sx * Sy) / (n * Sxx - Sx * Sx);
   const c = (Sy - m * Sx) / n;
 
