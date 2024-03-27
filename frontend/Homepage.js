@@ -37,7 +37,13 @@ import {
   paleBlue,
 } from "./style";
 
-const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded, transactions, setTransactions }) => {
+const HomeScreen = ({
+  navigation,
+  isRecordAdded,
+  unsetRecordAdded,
+  transactions,
+  setTransactions,
+}) => {
   // Reactive states
   const filterValueRef = createRef();
   const filterNameRef = createRef();
@@ -388,7 +394,7 @@ const HomeScreen = ({ navigation, isRecordAdded, unsetRecordAdded, transactions,
                 <View style={commonStyles.inputBoxContainer}>
                   <Text style={commonStyles.inputTitle}>Filter type</Text>
                   <SelectList
-                    data={allTypes}
+                    data={allTypes.slice(1)}
                     save="value"
                     setSelected={(value) => setFilterCategory(value)}
                     placeholder="All"

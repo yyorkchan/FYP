@@ -1,3 +1,90 @@
+import { filterTransactionCategory } from "./filterSort";
+import moment from "moment";
+
+export const encode = (transactions, timeScale, category) => {
+  const unitTime = timeScale.value * timeScale.unitInDay * 60 * 60 * 24 * 1000;
+
+  // Extract transactions for the category
+  const relatedTransactions = filterTransactionCategory(transactions, category);
+  if (relatedTransactions.length == 0) {
+    return [[], []];
+  }
+
+  // Summerise transactions within unit time
+  // time = (transaction.time - zeroTime) / unitTime rounded off
+  // value = total balance at a unit time
+  const zeroTime = new Date(relatedTransactions[0].time);
+  let times = [];
+  // deltaIncome is the change in balance
+  // Which will be converted to total balance
+  let deltaIncome = [];
+
+  // Convert to times and deltaIncome
+  relatedTransactions.forEach((transaction) => {
+    const unitTimeOffset = Math.round(
+      (new Date(transaction.time) - zeroTime) / unitTime,
+    );
+    if (times.length == 0 || unitTimeOffset != times[times.length - 1]) {
+      times.push(unitTimeOffset);
+    }
+    const timeIdx = times.indexOf(unitTimeOffset);
+    if (deltaIncome.length <= timeIdx) {
+      deltaIncome.push(0);
+    }
+    deltaIncome[timeIdx] += transaction.amount;
+  });
+
+  // If we want to predict change in balance
+  if (category != "Total Balance") {
+    // console.log(`Times: ${times}`);
+    // console.log(`Delta Income: ${deltaIncome}`);
+    return [times, deltaIncome];
+  }
+
+  // If we want to predict total balance
+  let values = [];
+  let sum = 0;
+  deltaIncome.forEach((deltaValue) => {
+    sum += deltaValue;
+    values.push(sum);
+  });
+
+  // console.log(`Times: ${times}`);
+  // console.log(`Values: ${values}`);
+  return [times, values];
+};
+
+export const decode = (transactions, timeScale) => {
+  const unitTime = timeScale.value * timeScale.unitInDay * 60 * 60 * 24 * 1000;
+  const currentTime = new Date();
+  const zeroTime = new Date(transactions[0].time);
+  const currentTimeUnit = Math.round((currentTime - zeroTime) / unitTime);
+  const latestTimeUnit = Math.round(
+    (new Date(transactions[transactions.length - 1].time) - zeroTime) /
+      unitTime,
+  );
+  const duration = timeScale.times;
+
+  // Get the next times
+  const nextTimes = [];
+  for (let i = 1; i <= duration; i++) {
+    nextTimes.push(currentTimeUnit + i);
+  }
+
+  // Get the display times
+  const value = timeScale.value;
+  const unit = timeScale.unit;
+  const timeFormat = timeScale.format;
+  const displayTimes = nextTimes.map((time) => {
+    const currentTime = new moment();
+    return currentTime
+      .add((time - currentTimeUnit) * value, unit)
+      .format(timeFormat);
+  });
+  // console.log(displayTimes);
+  return [nextTimes, displayTimes, latestTimeUnit];
+};
+
 const linearEstimator = (times, values) => {
   const n = times.length;
   const Sx = times.reduce((a, b) => a + b, 0);
@@ -72,7 +159,8 @@ const getLogError = (times, labels, estimator) => {
     (a, b, i) => a + (b - estimator(times[i])) ** 2,
     0,
   );
-  return Math.log(error / n);
+  // Avoid -Infinity
+  return Math.log(error / n + 1);
 };
 
 export const getBestEstimator = (times, values, latestTimeUnit) => {
@@ -87,9 +175,7 @@ export const getBestEstimator = (times, values, latestTimeUnit) => {
   const tunedFunctions = functions.map(
     (func, i) => (x) => func(x) - valueOffsets[i],
   );
-  const errors = tunedFunctions.map((func) =>
-    getLogError(times, values, func),
-  );
+  const errors = tunedFunctions.map((func) => getLogError(times, values, func));
 
   // Debug output
   // Output the estimated value for each point

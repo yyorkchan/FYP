@@ -28,25 +28,26 @@ const toggleWidth = Math.min(windowWidth, windowHeight) * 0.8;
 const toggleHeight = toggleWidth * 0.1;
 
 export const allTypes = [
-  { key: "0", value: "All" },
-  { key: "1", value: "Bills" },
-  { key: "2", value: "Education" },
-  { key: "3", value: "Entertainment" },
-  { key: "4", value: "Family" },
-  { key: "5", value: "Food" },
-  { key: "6", value: "Grocery" },
-  { key: "7", value: "Housing" },
-  { key: "8", value: "Insurance" },
-  { key: "9", value: "Medical" },
-  { key: "10", value: "Others" },
-  { key: "11", value: "Pet" },
-  { key: "12", value: "Saving" },
-  { key: "13", value: "Shopping" },
-  { key: "14", value: "Salary" },
-  { key: "15", value: "Sport" },
-  { key: "16", value: "Taxes" },
-  { key: "17", value: "Transport" },
-  { key: "18", value: "Travel" },
+  { key: "0", value: "Total Balance" },
+  { key: "1", value: "All" },
+  { key: "2", value: "Bills" },
+  { key: "3", value: "Education" },
+  { key: "4", value: "Entertainment" },
+  { key: "5", value: "Family" },
+  { key: "6", value: "Food" },
+  { key: "7", value: "Grocery" },
+  { key: "8", value: "Housing" },
+  { key: "9", value: "Insurance" },
+  { key: "10", value: "Medical" },
+  { key: "11", value: "Others" },
+  { key: "12", value: "Pet" },
+  { key: "13", value: "Saving" },
+  { key: "14", value: "Shopping" },
+  { key: "15", value: "Salary" },
+  { key: "16", value: "Sport" },
+  { key: "17", value: "Taxes" },
+  { key: "18", value: "Transport" },
+  { key: "19", value: "Travel" },
 ];
 
 const AddScreen = ({ navigation, setRecordAdded }) => {
@@ -216,7 +217,7 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
             <View style={commonStyles.inputBoxContainer}>
               <Text style={commonStyles.inputTitle}>Type</Text>
               <SelectList
-                data={allTypes.slice(1)}
+                data={allTypes.slice(2)}
                 save="value"
                 setSelected={(value) => setCategory(value)}
                 placeholder="Select type"
