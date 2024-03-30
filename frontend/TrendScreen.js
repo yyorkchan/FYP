@@ -129,7 +129,7 @@ const TrendScreen = ({ navigation, transactions }) => {
               backgroundColor: '#1cc910',
               backgroundGradientFrom: '#eff3ff',
               backgroundGradientTo: '#efefef',
-              decimalPlaces: 2,
+              decimalPlaces: 1,
               color: (opacity = 1) => `rgba(0, 110, 0, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(30, 30, 30, ${opacity})`,
               style: {
