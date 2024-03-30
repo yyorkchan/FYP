@@ -19,12 +19,14 @@ export const encode = (transactions, timeScale, category) => {
     if (times.length == 0 || unitTimeOffset != times[times.length - 1]) {
       times.push(unitTimeOffset);
     }
+    // console.log(`time: ${unitTimeOffset}`)
     const timeIdx = times.indexOf(unitTimeOffset);
     if (deltaIncome.length <= timeIdx) {
       deltaIncome.push(0);
     }
     deltaIncome[timeIdx] += transaction.amount;
   });
+  console.log(`Delta Income: ${deltaIncome}`);
 
   // If we want to predict change in balance
   if (category != "Total Balance") {
@@ -53,7 +55,7 @@ export const decode = (transactions, timeScale) => {
   const currentTimeUnit = Math.round((currentTime - zeroTime) / unitTime);
   const latestTimeUnit = Math.round(
     (new Date(transactions[transactions.length - 1].time) - zeroTime) /
-      unitTime,
+    unitTime,
   );
   const duration = 4;
 

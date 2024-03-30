@@ -62,4 +62,12 @@ export const commonStyles = StyleSheet.create({
   underline: {
     borderBottomWidth: fontSize * 0.05,
   },
+  graphTitle: {
+    fontSize: fontSize * 1.3,
+    fontWeight: "bold",
+    color: lightBlue,
+    opacity: 0.9,
+    marginBottom: fontSize,
+    marginTop: fontSize * 1.5,
+  },
 });

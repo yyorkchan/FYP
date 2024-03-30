@@ -3,10 +3,10 @@ import { Alert } from "react-native";
 
 // IP address of the server
 // Baseball
-export const IP = "192.168.1.141";
+// export const IP = "192.168.1.141";
 
 // York
-// export const IP = '192.168.0.169'
+export const IP = '10.68.21.45' //'192.168.0.169'
 
 export const PORT = 3000;
 
