@@ -55,7 +55,7 @@ export const decode = (transactions, timeScale) => {
     (new Date(transactions[transactions.length - 1].time) - zeroTime) /
       unitTime,
   );
-  const duration = timeScale.times;
+  const duration = 4;
 
   // Get the next times
   const nextTimes = [];

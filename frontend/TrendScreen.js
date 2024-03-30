@@ -7,32 +7,20 @@ import { encode, decode, getBestEstimator } from "../util/estimator";
 import { filterTransactionCategory } from "../util/filterSort";
 
 const predictTimeTypes = [
-  { key: "1", value: "1 Week" },
-  { key: "2", value: "1 Month" },
-  { key: "3", value: "3 Months" },
-  { key: "4", value: "6 Months" },
+  { key: "1", value: "4 Days" },
+  { key: "2", value: "4 Weeks" },
+  { key: "3", value: "2 Months" },
+  { key: "4", value: "4 Months" },
   { key: "5", value: "1 Year" },
 ];
 
 const predict = (transactions, predictTo, category) => {
   const toTimeScale = {
-    "1 Week": { value: 1, unit: "d", unitInDay: 1, times: 7, format: "DD/MM" },
-    "1 Month": { value: 7, unit: "d", unitInDay: 1, times: 4, format: "DD/MM" },
-    "3 Months": {
-      value: 14,
-      unit: "d",
-      unitInDay: 1,
-      times: 6,
-      format: "DD/MM",
-    },
-    "6 Months": {
-      value: 1,
-      unit: "M",
-      unitInDay: 30,
-      times: 6,
-      format: "MM/YY",
-    },
-    "1 Year": { value: 2, unit: "M", unitInDay: 30, times: 6, format: "MM/YY" },
+    "4 Days": { value: 1, unit: "d", unitInDay: 1, format: "DD/MM" },
+    "4 Weeks": { value: 7, unit: "d", unitInDay: 1, format: "DD/MM" },
+    "2 Months": { value: 15, unit: "d", unitInDay: 1, format: "DD/MM" },
+    "4 Months": { value: 1, unit: "M", unitInDay: 30, format: "MM/YY" },
+    "1 Year": { value: 3, unit: "M", unitInDay: 30, format: "MM/YY" },
   };
 
   // Perform checks
