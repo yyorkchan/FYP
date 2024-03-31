@@ -107,6 +107,9 @@ const TrendScreen = ({ navigation, transactions }) => {
         <TouchableOpacity
           onPress={() => {
             temp = predict(transactions, predictTo, category)
+            if (temp == null) {
+              return;
+            }
             setNextDisplayTimes(temp[0])
             setNextValues(temp[1])
           }}
@@ -121,7 +124,7 @@ const TrendScreen = ({ navigation, transactions }) => {
           <LineChart
             data={{
               labels: nextDisplayTimes,
-              datasets: [{ data: nextValues }]
+              datasets: [{ data: nextValues }],
             }}
             width={windowWidth * 0.95}
             height={200}
@@ -136,6 +139,7 @@ const TrendScreen = ({ navigation, transactions }) => {
                 borderRadius: 16,
               },
             }}
+            getDotColor={(dataPoint, dataPointIndex) => { return dataPointIndex >= nextValues.length - 4 ? 'orange' : 'green' }}
             bezier
           />
         )}

@@ -6,8 +6,8 @@ import { Alert } from "react-native";
 // export const IP = "192.168.1.141";
 
 // York
-export const IP = '10.68.21.45' //'192.168.0.169'
 
+export const IP = '192.168.0.169' //'10.68.21.45' 
 export const PORT = 3000;
 
 const getRecurringRecords = (records) => {
