@@ -60,6 +60,7 @@ export const filterTransactionCategory = (transactions, filterCategory) => {
   if (
     filterCategory == null ||
     filterCategory == "All" ||
+    filterCategory == "Balance Change" ||
     filterCategory == "Total Balance"
   )
     return transactions;

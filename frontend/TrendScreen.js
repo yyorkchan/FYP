@@ -15,6 +15,12 @@ const predictTimeTypes = [
   { key: "5", value: "1 Year" },
 ];
 
+const newTypes = [
+  { key: "0", value: "Total Balance" },
+  { key: "1", value: "Balance Change" },
+];
+const trendTypes = newTypes.concat(allTypes);
+
 const predict = (transactions, predictTo, category) => {
   // console.log(`Transactions: ${transactions.map((t) => t.amount)}`)
   const toTimeScale = {
@@ -110,7 +116,7 @@ const TrendScreen = ({ navigation, transactions }) => {
         <View style={commonStyles.inputBoxContainer}>
           <Text style={commonStyles.inputTitle}>Record Type</Text>
           <SelectList
-            data={allTypes}
+            data={trendTypes}
             save="value"
             setSelected={(value) => setCategory(value)}
             placeholder="Total Balance"

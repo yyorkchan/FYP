@@ -28,8 +28,6 @@ const toggleWidth = Math.min(windowWidth, windowHeight) * 0.8;
 const toggleHeight = toggleWidth * 0.1;
 
 export const allTypes = [
-  { key: "0", value: "Total Balance" },
-  { key: "1", value: "All" },
   { key: "2", value: "Bills" },
   { key: "3", value: "Education" },
   { key: "4", value: "Entertainment" },
@@ -217,7 +215,7 @@ const AddScreen = ({ navigation, setRecordAdded }) => {
             <View style={commonStyles.inputBoxContainer}>
               <Text style={commonStyles.inputTitle}>Type</Text>
               <SelectList
-                data={allTypes.slice(2)}
+                data={allTypes}
                 save="value"
                 setSelected={(value) => setCategory(value)}
                 placeholder="Select type"

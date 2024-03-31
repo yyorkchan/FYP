@@ -43,6 +43,10 @@ const HomeScreen = ({
   transactions,
   setTransactions,
 }) => {
+
+  const newType = [{ key: "1", value: "All" }]
+  const homeTypes = newType.concat(allTypes)
+
   // Reactive states
   const filterValueRef = createRef();
   const filterNameRef = createRef();
@@ -393,7 +397,7 @@ const HomeScreen = ({
                 <View style={commonStyles.inputBoxContainer}>
                   <Text style={commonStyles.inputTitle}>Filter type</Text>
                   <SelectList
-                    data={allTypes.slice(1)}
+                    data={homeTypes}
                     save="value"
                     setSelected={(value) => setFilterCategory(value)}
                     placeholder="All"
