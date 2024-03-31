@@ -40,37 +40,54 @@ const predict = (transactions, predictTo, category) => {
 
   // Encode transactions
   const timeScale = toTimeScale[predictTo];
-  console.log(`Fitered Transactions: ${filteredTransactions.map((t) => t.amount)}`);
-  const [times, values] = encode(filteredTransactions, timeScale, category);
-
-  // Decode the next times to date for printing
-  const [nextTimes, nextDisplayTimes, latestTimeUnit] = decode(
+  console.log(
+    `Fitered Transactions: ${filteredTransactions.map((t) => t.amount)}`,
+  );
+  const [recordTimes, recordValues] = encode(
     filteredTransactions,
     timeScale,
+    category,
+  );
+
+  // Decode the next times to date for printing
+  const prevTimes = recordTimes.slice(-4);
+  const [nextTimes, displayTimes, latestTimeUnit] = decode(
+    filteredTransactions,
+    timeScale,
+    prevTimes,
   );
   // console.log(`Next times: ${nextTimes}`);
 
   // Get estimator
-  const bestEstimator = getBestEstimator(times, values, latestTimeUnit);
-  if (bestEstimator == null) {
+  const bestEstimator = getBestEstimator(
+    recordTimes,
+    recordValues,
+    latestTimeUnit,
+  );
+  if (recordTimes.length < 4 || bestEstimator == null) {
     Alert.alert("Not enough data to predict");
     return;
   }
 
   // Predict the next values
   const nextValues = nextTimes.map((time) => parseInt(bestEstimator(time)));
-  console.log(`Next display times: ${nextDisplayTimes}`);
+  console.log(`Display times: ${displayTimes}`);
   console.log(`Next values: ${nextValues}`);
-  console.log(`Current Values: ${values}`);
+  console.log(`Current Values: ${recordValues}`);
   console.log(`\n`);
-  return [nextDisplayTimes, nextValues];
+
+  // Combine previous and predicted values
+  const prevValues = recordValues.slice(-4);
+  const displayValues = prevValues.concat(nextValues);
+
+  return [displayTimes, displayValues];
 };
 
 const TrendScreen = ({ navigation, transactions }) => {
   const [predictTo, setPredictTo] = useState(null);
   const [category, setCategory] = useState("Total Balance");
-  const [nextValues, setNextValues] = useState(null);
-  const [nextDisplayTimes, setNextDisplayTimes] = useState(null);
+  const [displayValues, setDisplayValues] = useState(null);
+  const [displayTimes, setDisplayTimes] = useState(null);
 
   return (
     <ScrollView contentContainerStyle={commonStyles.scrollContainer}>
@@ -106,12 +123,12 @@ const TrendScreen = ({ navigation, transactions }) => {
         {/* Predict button */}
         <TouchableOpacity
           onPress={() => {
-            temp = predict(transactions, predictTo, category)
+            temp = predict(transactions, predictTo, category);
             if (temp == null) {
               return;
             }
-            setNextDisplayTimes(temp[0])
-            setNextValues(temp[1])
+            setDisplayTimes(temp[0]);
+            setDisplayValues(temp[1]);
           }}
         >
           <Text style={commonStyles.button}>Predict</Text>
@@ -119,19 +136,21 @@ const TrendScreen = ({ navigation, transactions }) => {
         {/* Line chart */}
         {/* title */}
 
-        {nextValues && (<Text style={commonStyles.graphTitle}>Trend Prediction</Text>)}
-        {nextValues && (
+        {displayValues && (
+          <Text style={commonStyles.graphTitle}>Trend Prediction</Text>
+        )}
+        {displayValues && (
           <LineChart
             data={{
-              labels: nextDisplayTimes,
-              datasets: [{ data: nextValues }],
+              labels: displayTimes,
+              datasets: [{ data: displayValues }],
             }}
             width={windowWidth * 0.95}
             height={200}
             chartConfig={{
-              backgroundColor: '#1cc910',
-              backgroundGradientFrom: '#eff3ff',
-              backgroundGradientTo: '#efefef',
+              backgroundColor: "#1cc910",
+              backgroundGradientFrom: "#eff3ff",
+              backgroundGradientTo: "#efefef",
               decimalPlaces: 1,
               color: (opacity = 1) => `rgba(0, 110, 0, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(30, 30, 30, ${opacity})`,
@@ -139,7 +158,11 @@ const TrendScreen = ({ navigation, transactions }) => {
                 borderRadius: 16,
               },
             }}
-            getDotColor={(dataPoint, dataPointIndex) => { return dataPointIndex >= nextValues.length - 4 ? 'orange' : 'green' }}
+            getDotColor={(dataPoint, dataPointIndex) => {
+              return dataPointIndex >= displayValues.length - 4
+                ? "orange"
+                : "green";
+            }}
             bezier
           />
         )}

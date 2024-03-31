@@ -48,7 +48,7 @@ export const encode = (transactions, timeScale, category) => {
   return [times, values];
 };
 
-export const decode = (transactions, timeScale) => {
+export const decode = (transactions, timeScale, prevTimes) => {
   const unitTime = timeScale.value * timeScale.unitInDay * 60 * 60 * 24 * 1000;
   const currentTime = new Date();
   const zeroTime = new Date(transactions[0].time);
@@ -64,12 +64,13 @@ export const decode = (transactions, timeScale) => {
   for (let i = 1; i <= duration; i++) {
     nextTimes.push(currentTimeUnit + i);
   }
+  const prevNextTimes = prevTimes.concat(nextTimes);
 
   // Get the display times
   const value = timeScale.value;
   const unit = timeScale.unit;
   const timeFormat = timeScale.format;
-  const displayTimes = nextTimes.map((time) => {
+  const displayTimes = prevNextTimes.map((time) => {
     const currentTime = new moment();
     return currentTime
       .add((time - currentTimeUnit) * value, unit)
