@@ -170,7 +170,7 @@ const HomeScreen = ({
     setFilterAmountMax(null);
     setFilterStartTime(null);
     setFilterEndTime(null);
-    setFilterCategory(null);
+    setFilterCategory("All");
     setFilterName(null);
     filterNameRef.current.clear();
   };
