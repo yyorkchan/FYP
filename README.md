@@ -10,13 +10,11 @@ This is Our FYP. ｡ﾟヽ(ﾟ ´Д`)ﾉﾟ｡
 - ALWAYS USE `yarn add` to install packages, avoid using `npm install`
 - Use **Expo Go** to Debug
 - Run `node index.js` in /backend to start express server
+- add your expo go IP in help.js
 
 ## Current To-Do List:
 
 Next up (๑•̀ㅂ•́)و✧ 🔥
-
-- Implement a graph for display predicted values (York)
-- (Optional) Use a LLM to describe the trend (York)
 
 Done! ✧◝(⁰▿⁰)◜✧ ✅
 
@@ -34,6 +32,7 @@ Done! ✧◝(⁰▿⁰)◜✧ ✅
 12. Only Allow Non-empty value in Add Screen
 13. Built partially the trend screen frontend
 14. Powerful and efficient regression model for processing transactions
+15. Implement a graph for display predicted values
 
 ## General Structure
 
@@ -56,6 +55,7 @@ Done! ✧◝(⁰▿⁰)◜✧ ✅
 - estimator.js contains regression models with pre-preprocessing functions
 
 ### Points to note when working with regression
+
 - The "predict" function in "TrendScreen.js" is responsible for producing the predictions. It returns nextDisplayTimes and nextValues
 - nextDisplayTimes is an array of date string, in format DD/MM or MM/YY according to duration
 - nextValues is an array of predicted values corresponding to the dates in nextDisplayTimes
