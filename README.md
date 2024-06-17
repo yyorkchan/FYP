@@ -43,7 +43,7 @@ Done! ✧◝(⁰▿⁰)◜✧ ✅
 ### Frontend
 
 - App.js is the main Javascript file that contains all the Pages to be navigate
-- All 3 frontend pages should be contained in the folder "/frontend"
+- All 3 frontend pages should be contained in the directory "/frontend"
 - All unique css should be included at the end of the corresponding frontend js, Read Homepage.js for the detailed formatting
 - All common css should be included in "style.js", including fontSize, windowSizes etc
 
@@ -57,10 +57,3 @@ Done! ✧◝(⁰▿⁰)◜✧ ✅
 - filterSort.js contains functions for filtering and sorting transactions
 - helper.js contains miscellaneous functions and some generic constants
 - estimator.js contains regression models with pre-preprocessing functions
-
-### Points to note when working with regression
-
-- The "predict" function in "TrendScreen.js" is responsible for producing the predictions. It returns nextDisplayTimes and nextValues
-- nextDisplayTimes is an array of date string, in format DD/MM or MM/YY according to duration
-- nextValues is an array of predicted values corresponding to the dates in nextDisplayTimes
-- You may see their values in Expo console after pressing the "predict" button in the TrendScreen
