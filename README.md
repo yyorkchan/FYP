@@ -2,22 +2,26 @@
 
 This is Our FYP. ｡ﾟヽ(ﾟ ´Д`)ﾉﾟ｡
 
+It is a minimalistic cross platform mobile finanical management application. It comes in three screens:
+- Home screen: Display and order stored transactions
+- Add screen: Add new transactions to record. Recurring transactions supported!
+- Trend screen: Predict future transactions based on regression models.
+
 ## Important Notes
 
-- Download the github pull request extension
-- Clone this project to your vscode
+- Clone this project to your desired path
 - Run `yarn` After clone
 - ALWAYS USE `yarn add` to install packages, avoid using `npm install`
 - Use **Expo Go** to Debug
 - Run `node index.js` in /backend to start express server
-- add your expo go IP in help.js
+- Add your expo go IP in help.js
 
 ## Current To-Do List:
 
 Next up (๑•̀ㅂ•́)و✧ 🔥
+ALL DONE!
 
 Done! ✧◝(⁰▿⁰)◜✧ ✅
-
 1. Build Home Page: Done!
 2. Figure out how to navigate: Done!
 3. Get familiar with Retool: Done!
